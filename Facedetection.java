@@ -21,7 +21,7 @@ public class FaceEyeDetectionExample {
         faceCascade.load(faceCascadeFile);
         eyeCascade.load(eyeCascadeFile);
 
-        // Load an image
+        // Replace the path to Load an image
         String imagePath = "path_to_image.jpg";
         Mat image = Imgcodecs.imread(imagePath);
 
@@ -51,9 +51,26 @@ public class FaceEyeDetectionExample {
                 eyeRect.y += faceRect.y;
                 Imgproc.rectangle(image, eyeRect.tl(), eyeRect.br(), new Scalar(255, 0, 0), 2);
             }
+            // Check if face is facing forward
+            if (isFaceFacingForward(eyeDetections)) {
+                System.out.println("Face is facing forward.");
+            } else {
+                System.out.println("Face is not facing forward.");
+            }
         }
 
         // Display the image with detected faces and eyes
         Imgcodecs.imwrite("output_image.jpg", image);
+    }
+    private static boolean isFaceFacingForward(MatOfRect eyeDetections) {
+        Rect[] eyes = eyeDetections.toArray();
+        
+        if (eyes.length != 2) {
+            return false; 
+        }
+
+        // Check if eyes are horizontally aligned
+        int tolerance = 15;  // Adjust as needed 
+        return Math.abs(eyes[0].y - eyes[1].y) < tolerance;
     }
 }
