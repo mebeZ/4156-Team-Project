@@ -24,8 +24,8 @@ import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
-import org.opencv.core.Size;
-import org.opencv.highgui.HighGui;
+//import org.opencv.core.Size;
+//import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
@@ -33,7 +33,7 @@ import org.opencv.objdetect.CascadeClassifier;
 @RestController
 public class FaceController {
 	// Used to name RGB histogram files sequentially
-	// private static int imgNum = 1;
+	private static int imgNum = 1;
 
 	public static Mat detectEye(Mat imgMatrix) {
 		//Mat imgMatrix = Imgcodecs.imread(fpath);
@@ -121,12 +121,14 @@ public class FaceController {
 			Imgproc.HoughCircles(grayEyeImage, irisCircles, Imgproc.HOUGH_GRADIENT, 1.0,
 			minDist,
 			p1, p2, minIrisRadius, maxIrisRadius);
+			System.out.println("minIrisRadius = " + minIrisRadius);
+			System.out.println("maxIrisRadius = " + maxIrisRadius);
 			// If no circles are detected, increase the max radius
 			if (irisCircles.cols() < 1 && maxIrisRadius <= (grayEyeImage.rows() / 4)) {
 				maxIrisRadius *= 2;
 			// if we've increased the max radius, and still no circles are detected, then there likely is not an iris in the image, so throw an exception
 			} else if (irisCircles.cols() < 1) {
-				throw new Exception("detectIris failed: Number of detected circles should be 1 (i.e. the iris). However, " + irisCircles.cols() + " were detected"); 
+				throw new Exception("detectIris failedd: Number of detected circles should be 1 (i.e. the iris). However, " + irisCircles.cols() + " were detected"); 
 			// If more than 1 circles are detected, tweak the parameters such that less false positives are detected
 			} else if (irisCircles.cols() > 1 && minDist <= (double)grayEyeImage.rows()/16) {
 				minDist *= 1.5;
@@ -221,8 +223,8 @@ public class FaceController {
 		HighGui.waitKey();
 		*/
 		Mat iris_roi = new Mat(eyeRegion, roi);
-		HighGui.imshow("Iris ROI", iris_roi);
-		HighGui.waitKey();
+		//HighGui.imshow("Iris ROI", iris_roi);
+		//HighGui.waitKey();
 
 		int numChannels = eyeRegion.channels();
 		System.out.println("Number of channels: " + numChannels);
@@ -273,6 +275,7 @@ public class FaceController {
 			red_counts.add(red_hist.get(i, 0)[0]);
 		}
 
+		/*
 		Plot plt = Plot.create();
 		plt.plot().add(intensities, blue_counts, "b");
 		plt.plot().add(intensities, green_counts, "g");
@@ -287,10 +290,10 @@ public class FaceController {
 		} catch (IOException | PythonExecutionException e) {
 			e.printStackTrace();
 		}
-		/*
 		plt.savefig("/Users/ZMan/Desktop/2023-24/ASE/imaging/src/main/resources/static/images/hist" + imgNum + ".jpeg");
 		imgNum++;
 		*/
+		
 		int intensity_range[] = {0, intensity_max-2};
 		double blue_avg_intensity = getAvgIntensity(blue_counts, intensity_range);
 		double green_avg_intensity = getAvgIntensity(green_counts, intensity_range);
