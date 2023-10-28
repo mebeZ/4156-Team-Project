@@ -45,8 +45,8 @@ public class FaceController {
 		//Imgproc.resize(imgMatrix, imgMatrix, new Size(1000, 1000));
 		//System.out.println("Size of the resized face image: " + imgMatrix.size());
 
-		CascadeClassifier faceCascade = new CascadeClassifier("/Users/ZMan/Desktop/2023-24/ASE/imaging/src/main/resources/templates/haarcascades/haarcascade_frontalface_default.xml");
-		CascadeClassifier eyesCascade = new CascadeClassifier("/Users/ZMan/Desktop/2023-24/ASE/imaging/src/main/resources/templates/haarcascades/haarcascade_eye.xml");
+		CascadeClassifier faceCascade = new CascadeClassifier("src/main/resources/templates/haarcascades/haarcascade_frontalface_default.xml");
+		CascadeClassifier eyesCascade = new CascadeClassifier("src/main/resources/templates/haarcascades/haarcascade_eye.xml");
 		
 		MatOfRect faces = new MatOfRect();
 		MatOfRect eyes = new MatOfRect();
