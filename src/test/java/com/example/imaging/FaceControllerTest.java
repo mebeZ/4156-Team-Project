@@ -49,25 +49,21 @@ class FaceControllerTest {
 
 	@Test
 	void loadInvalidImageFile() {
-		FaceControllerTest.loadLocally();
 		assertThrows(FileNotFoundException.class, () -> FaceController.loadImageFile("foo.txt")); // foo.txt is an invalid file
 	}
 
 	@Test 
 	void loadImageFromEmptyString() {
-		FaceControllerTest.loadLocally();
 		assertThrows(FileNotFoundException.class, () -> FaceController.loadImageFile(""));
 	}
 
 	@Test
 	void loadImageFromNULL() {
-		FaceControllerTest.loadLocally();
 		assertThrows(FileNotFoundException.class, () -> FaceController.loadImageFile(null));
 	}
 
 	@Test
 	void loadValidImageFile() {
-		FaceControllerTest.loadLocally();
 		try {
 			Mat result = FaceController.loadImageFile("samantha");
 			Mat EXPECTED = Imgcodecs.imread( "C:\\Users\\Yonghan Xie\\4156-Team-Project\\src\\main\\resources\\static\\images\\samantha-green.jpeg");
