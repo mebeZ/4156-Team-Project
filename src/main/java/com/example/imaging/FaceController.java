@@ -262,13 +262,12 @@ public class FaceController {
 		//System.out.println("Number of bins: " + blue_hist.rows());
 
 		// Plot the blue color histogram
-		List<Double> intensities = NumpyUtils.linspace(1, intensity_max-1, intensity_max-2);
+		List<Double> intensities = NumpyUtils.linspace(0, intensity_max, intensity_max-1);
 		List<Double> blue_counts = new ArrayList<Double>();
 		List<Double> green_counts = new ArrayList<Double>();
 		List<Double> red_counts = new ArrayList<Double>();
 
-		// We plot from intensities=(0, 255). We don't plot at the edge intensities of 0 or 255 because the values can be extremely large for each channel (empirical observation)
-		for (int i = 1; i < intensity_max-1; i++) {
+		for (int i = 0; i < intensity_max; i++) {
 			//System.out.println("Count of bin " + i + " = " + blue_hist.get(i, 0)[0]);
 			blue_counts.add(blue_hist.get(i,0)[0]);
 			green_counts.add(green_hist.get(i, 0)[0]);
@@ -294,7 +293,8 @@ public class FaceController {
 		imgNum++;
 		*/
 		
-		int intensity_range[] = {0, intensity_max-2};
+		// We do not include the edge intensities of 0 and 255 because their counts were empirically found to be quite large and could throw of the brightness avg calculation
+		int intensity_range[] = {1, intensity_max-1};
 		double blue_avg_intensity = getAvgIntensity(blue_counts, intensity_range);
 		double green_avg_intensity = getAvgIntensity(green_counts, intensity_range);
 		
@@ -306,10 +306,16 @@ public class FaceController {
 		}
 	}
 
+	/**
+	 * This method returns the average intensity of the histogram, where only values from 'range' are included in the calculation. 
+	 * @param hist is a list of counts for each intensity value. For example hist={3, 4, 5} would mean that there are three pixels in the image with an intensity of 0 (technically between 0 and 1), four pixels with an intensity of 1 and five pixels with an intensity of 2.
+	 * @param range is the span of intensities that we include in our calculation. range = [lowest_intensity, highest_intensity]. For example, specifying range={1,254} would tell us to exclude pixels with brightness of 0 and 255. Note: The first value in range cannot be less than the first index of hist (0) and the second value in range cannot be greater than the last index of hist (hist.length - 1). 
+	 * @returns a double representing the weighted average intensity of the pixels whose brightness falls within our specified range. 
+	 */
 	private static double getAvgIntensity(List<Double> hist, int[] range) {
 		int numerator = 0;
 		int denominator = 0;
-		for (int i = range[0]; i < range[1]; i++) {
+		for (int i = range[0]; i <= range[1]; i++) {
 			numerator += i * hist.get(i);
 			denominator += hist.get(i);
 		}
