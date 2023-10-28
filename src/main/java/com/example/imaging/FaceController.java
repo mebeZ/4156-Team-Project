@@ -330,6 +330,9 @@ public class FaceController {
 			if (imageFiles[i].isFile()) {
 				String filename = imageFiles[i].getName();
 				System.out.println(filename);
+				if (name == null || name.equals("")){
+					throw new FileNotFoundException("No image file containing name = " + name);
+				}
 				System.out.println(filename.indexOf(name));
 				if (filename.indexOf(name) >= 0) {
 					String filepath = imageFiles[i].getAbsolutePath();
