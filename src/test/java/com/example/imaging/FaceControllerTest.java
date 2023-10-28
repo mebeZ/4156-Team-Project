@@ -40,7 +40,18 @@ class FaceControllerTest {
 
 	/**
 	 * Tests for getAvgIntensity method
-	 * 1. 
+	 * 1a. A histogram (hist) with one or more negative values should throw an Exception because there cannot be negative pixel counts.
+	 * 1b. A histogram with all values equal to zero should throw an exception because the average brightness is in this case. 
+	 * 1c. A null histogram should throw an exception
+	 * 1d. A histogram which is an empty list should throw an exception
+	 * 2a. If range is incorrectly formatted with the start value below zero, then the method should throw an exception
+	 * 2b. If range is incorrectly formatted with the end value greater than hist.length - 1, then the method should throw an exception
+	 * 2c. If range is incorrectly formatted with both the start value and end value being invalid then the method should throw an exception. 
+	 * 2d. If range is null, the method should through an exception
+	 * 2e. If range has less than two elements, the method should throw an exception 
+	 * 2f. If range has more than two elements, the method should throw an exception
+	 * 3a. If hist only has one element, and the range is {0, 0}, then the return value should be 0 (i.e. the index of the one element of the hist)
+	 * 3b. If hist has more than one element
 	 */
 
 }
