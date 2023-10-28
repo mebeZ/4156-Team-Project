@@ -290,7 +290,7 @@ public class FaceController {
 		} catch (IOException | PythonExecutionException e) {
 			e.printStackTrace();
 		}
-		plt.savefig("/Users/ZMan/Desktop/2023-24/ASE/imaging/src/main/resources/static/images/hist" + imgNum + ".jpeg");
+		plt.savefig("src/main/resources/static/images/hist" + imgNum + ".jpeg");
 		imgNum++;
 		*/
 		
