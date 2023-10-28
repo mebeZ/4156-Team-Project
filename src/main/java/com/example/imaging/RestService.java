@@ -11,7 +11,7 @@ public class RestService {
     public static void main(String[] args) {
         //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         OpenCV.loadLocally();
-        //FaceController.getEyeColor("sarah");
-        SpringApplication.run(RestService.class, args);
+        FaceController.getEyeColor("samantha");
+        //SpringApplication.run(RestService.class, args);
     }
 }

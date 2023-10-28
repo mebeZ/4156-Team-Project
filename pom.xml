@@ -19,6 +19,14 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<dependency>
 			<groupId>com.github.sh0nk</groupId>
 			<artifactId>matplotlib4j</artifactId>
 			<version>0.5.0</version>

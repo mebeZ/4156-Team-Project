@@ -5,12 +5,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.sh0nk.matplotlib4j.NumpyUtils;
-import com.github.sh0nk.matplotlib4j.Plot;
-import com.github.sh0nk.matplotlib4j.PythonExecutionException;
+//import com.github.sh0nk.matplotlib4j.Plot;
+//import com.github.sh0nk.matplotlib4j.PythonExecutionException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
+//import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -33,7 +33,7 @@ import org.opencv.objdetect.CascadeClassifier;
 @RestController
 public class FaceController {
 	// Used to name RGB histogram files sequentially
-	private static int imgNum = 1;
+	//private static int imgNum = 1;
 
 	public static Mat detectEye(Mat imgMatrix) {
 		//Mat imgMatrix = Imgcodecs.imread(fpath);
@@ -299,7 +299,7 @@ public class FaceController {
 		double green_avg_intensity = getAvgIntensity(green_counts, intensity_range);
 		
 		// Purely based on empirical observation
-		if (blue_avg_intensity > green_avg_intensity - 5) {
+		if (blue_avg_intensity > green_avg_intensity) {
 			return "blue";
 		} else {
 			return "green";
@@ -316,8 +316,15 @@ public class FaceController {
 		return numerator / denominator;
 	}
 
+	/**
+	 * Locates a person's image file and load it into memory. If there are multiple valid image files containing a person's name, only the first one is loaded.
+	 * 
+	 * @param name is a person's name - must be a valid substring in at least one image file in resources/static/images
+	 * @exception FileNotFoundException if name does not appear in at least one image file 
+	 * @returns: On success, a matrix representing the loaded image file; on failure, a FileNotFoundException
+	 */
 	public static Mat loadImageFile(String name) throws FileNotFoundException {
-		File imagesFolder = new File("/Users/ZMan/Desktop/2023-24/ASE/imaging/src/main/resources/static/images");
+		File imagesFolder = new File("src/main/resources/static/images");
 		File[] imageFiles = imagesFolder.listFiles();
 		for (int i = 0; i < imageFiles.length; i++) {
 			if (imageFiles[i].isFile()) {
@@ -340,6 +347,7 @@ public class FaceController {
 
 	// A GET request to /eye-color binds to the calling of method 'getEyeColor'
 	// @RequestParam binds the value of the query parameter name to the value of parameter name in the method
+	// localhost:8080/eye-color?name=carl
 	@GetMapping("/eye-color")
 	public static FaceInfo getEyeColor(@RequestParam(value="name") String name) {
 		Mat faceImage = null;
