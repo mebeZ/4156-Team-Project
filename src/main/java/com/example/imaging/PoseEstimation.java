@@ -1,3 +1,5 @@
+package com.example.imaging;
+
 import nu.pattern.OpenCV;
 import org.opencv.core.*;
 import org.opencv.core.Point;
