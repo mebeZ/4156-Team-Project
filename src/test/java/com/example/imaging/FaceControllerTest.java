@@ -1,5 +1,5 @@
 package com.example.imaging;
-
+import java.io.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
@@ -70,12 +70,25 @@ class FaceControllerTest {
 		FaceControllerTest.loadLocally();
 		try {
 			Mat result = FaceController.loadImageFile("samantha");
-			Mat EXPECTED = Imgcodecs.imread( "C:\\Users\\Yonghan Xie\\4156-Team-Project\\src\\main\\resources\\static\\images\\samantha-green.jpeg");
+			Mat EXPECTED = Imgcodecs.imread( "src/main/resources/static/images/samantha-green.jpeg");
 			Assertions.assertEquals(EXPECTED.rows(), result.rows());
 			Assertions.assertEquals(EXPECTED.cols(), result.cols());
 		} catch (FileNotFoundException error) {
 			System.out.println(error.getMessage());
 		}
+	}
+
+	@Test
+	void multipleValidImageFile() {
+		File mockImage = new File("src/main/resources/static/images/mock-images/");
+		mockImage.mkdirs();
+		File foo = new File("src/main/resources/static/images/mock-images/foo/");
+		File bar = new File("src/main/resources/static/images/mock-images/bar/");
+		foo.mkdirs();
+		bar.mkdirs();
+		//mockImage.delete();
+		//foo.delete();
+		//bar.delete();
 	}
 
 
