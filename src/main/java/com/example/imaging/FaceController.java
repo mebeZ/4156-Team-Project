@@ -312,7 +312,7 @@ public class FaceController {
 	 * @param range is the span of intensities that we include in our calculation. range = [lowest_intensity, highest_intensity]. For example, specifying range={1,254} would tell us to exclude pixels with brightness of 0 and 255. Note: The first value in range cannot be less than the first index of hist (0) and the second value in range cannot be greater than the last index of hist (hist.length - 1). 
 	 * @returns a double representing the weighted average intensity of the pixels whose brightness falls within our specified range. 
 	 */
-	private static double getAvgIntensity(List<Double> hist, int[] range) {
+	public static double getAvgIntensity(List<Double> hist, int[] range) {
 		int numerator = 0;
 		int denominator = 0;
 		for (int i = range[0]; i <= range[1]; i++) {

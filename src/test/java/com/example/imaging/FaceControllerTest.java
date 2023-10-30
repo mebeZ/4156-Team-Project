@@ -11,20 +11,11 @@ import java.io.FileNotFoundException;
 
 import nu.pattern.OpenCV;
 import org.junit.jupiter.api.BeforeAll;
-import org.opencv.core.Core;
+
 // OpenCV imports
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfFloat;
-import org.opencv.core.MatOfInt;
-import org.opencv.core.MatOfRect;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-//import org.opencv.core.Size;
-//import org.opencv.highgui.HighGui;
+
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.objdetect.CascadeClassifier;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -203,7 +194,7 @@ class FaceControllerTest {
 	void testSingleElementHistAndRangeZeroToZero() {
 		List<Double> hist = Arrays.asList(3.0);
 		int[] range = {0, 0};
-		double avgIntensity = FaceController.getAvgIntensity(hist, range);
+		int avgIntensity = (int) FaceController.getAvgIntensity(hist, range);
 		assertEquals(0, avgIntensity);
 	}
 	
