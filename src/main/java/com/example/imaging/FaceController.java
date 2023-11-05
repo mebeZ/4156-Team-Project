@@ -322,51 +322,15 @@ public class FaceController {
 		return numerator / denominator;
 	}
 
-	/**
-	 * Locates a person's image file and load it into memory. If there are multiple valid image files containing a person's name, only the first one is loaded.
-	 * 
-	 * @param name is a person's name - must be a valid substring in at least one image file in resources/static/images
-	 * @exception FileNotFoundException if name does not appear in at least one image file 
-	 * @returns: On success, a matrix representing the loaded image file; on failure, a FileNotFoundException
-	 */
-	public static Mat loadImageFile(String name) throws FileNotFoundException {
-		File imagesFolder = new File("src/main/resources/static/images");
-		File[] imageFiles = imagesFolder.listFiles();
-		for (int i = 0; i < imageFiles.length; i++) {
-			if (imageFiles[i].isFile()) {
-				String filename = imageFiles[i].getName();
-				System.out.println(filename);
-				if (name == null || name.equals("")){
-					throw new FileNotFoundException("No image file containing name = " + name);
-				}
-				System.out.println(filename.indexOf(name));
-				if (filename.indexOf(name) >= 0) {
-					String filepath = imageFiles[i].getAbsolutePath();
-					System.out.println("Filepath = " + filepath);
-					Mat imgMatrix = Imgcodecs.imread(filepath);
-					System.out.println("Size of the original loaded image: " + imgMatrix.size());
-					//System.out.println("Number of rows: " + imgMatrix.rows() + " Number of cols: " + imgMatrix.cols());
-					//Imgproc.resize(imgMatrix, imgMatrix, new Size(1000, 1000));
-					return imgMatrix;
-				}
-			}
-		}
-		throw new FileNotFoundException("No image file containing name = " + name);
-	}
+
 
 	// A GET request to /eye-color binds to the calling of method 'getEyeColor'
 	// @RequestParam binds the value of the query parameter name to the value of parameter name in the method
 	// localhost:8080/eye-color?name=carl
 	@GetMapping("/eye-color")
 	public static FaceInfo getEyeColor(@RequestParam(value="name") String name) {
-		Mat faceImage = null;
-		try {
-			System.out.println("Loading image file...");
-			faceImage = loadImageFile(name);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
+		System.out.println("Loading image file...");
+		Mat faceImage = IOUtils.loadFileAsMat(name);
 		
 		System.out.println("Image file " + name + " successfully loaded");
 		Mat eyeImage = detectEye(faceImage);
