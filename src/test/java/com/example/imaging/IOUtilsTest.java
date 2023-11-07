@@ -2,8 +2,14 @@ package com.example.imaging;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.io.IOException;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,6 +19,8 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import nu.pattern.OpenCV;
+
+import javax.imageio.ImageIO;
 
 @SpringBootTest
 public class IOUtilsTest {
@@ -52,7 +60,7 @@ public class IOUtilsTest {
 	@Test
 	void loadValidImageFile() {
         Mat result = IOUtils.loadFileAsMat("samantha");
-        Mat expected = Imgcodecs.imread( "src/main/resources/static/images/samantha-green.jpeg");
+        Mat expected = Imgcodecs.imread( "src/main/resources/static/plain-images/samantha-green.jpeg");
         Assertions.assertEquals(expected.rows(), result.rows());
         Assertions.assertEquals(expected.cols(), result.cols());
 	}
@@ -61,18 +69,82 @@ public class IOUtilsTest {
 	void multipleValidImageFile() {
 		File mockImage = new File("src/main/resources/static/images/mock-images/");
 		mockImage.mkdirs();
-		File foo = new File("src/main/resources/static/images/mock-images/foo/");
-		File bar = new File("src/main/resources/static/images/mock-images/bar/");
-		foo.mkdirs();
-		bar.mkdirs();
-		//mockImage.delete();
+
+		//copy samantha-green.jpeg to mock-images folder
+		Path sourcePath = Paths.get("src/main/resources/static/plain-images/samantha-green.jpeg");
+		Path destinationPath = Paths.get("src/main/resources/static/images/mock-images/samantha-green.jpeg");
+		try {
+			Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+			System.out.println("File copied successfully!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		//copy carl-blue.jpeg to mock-images folder and rename as samantha-blue.jpeg
+		sourcePath = Paths.get("src/main/resources/static/plain-images/carl-blue.jpeg");
+		destinationPath = Paths.get("src/main/resources/static/images/mock-images/samantha-blue.jpeg");
+		try {
+			Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+			System.out.println("File copied successfully!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		//test loadFileAsMat can read the samantha-green as the first input between samantha-blue and samantha-green in mock-images folder
+		Mat result = IOUtils.loadFileAsMat("samantha");
+		Mat expected = Imgcodecs.imread( "src/main/resources/static/images/mock-images/samantha-green.jpeg");
+
+		Assertions.assertEquals(expected.rows(), result.rows());
+		Assertions.assertEquals(expected.cols(), result.cols());
+		mockImage.delete();
+		//File foo = new File("src/main/resources/static/images/mock-images/foo/");
+		//File bar = new File("src/main/resources/static/images/mock-images/bar/");
+		//foo.mkdirs();
+		//bar.mkdirs();
 		//foo.delete();
 		//bar.delete();
 	}
 
-    //	@Test
-//	void loadMultipleValidImageFile() {
-//
-//	}
+	@Test
+	void loadInvalidBufferedImageFile() {
+		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile("foo.txt"));
+	}
+
+	@Test
+	void loadBufferedImageFromEmptyString() {
+		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile(""));
+
+	}
+	@Test
+	void loadBufferedImageFromNULL() {
+		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile(null));
+	}
+
+	boolean bufferedImagesEqual(BufferedImage img1, BufferedImage img2) {
+		if (img1.getWidth() == img2.getWidth() && img1.getHeight() == img2.getHeight()) {
+			for (int x = 0; x < img1.getWidth(); x++) {
+				for (int y = 0; y < img1.getHeight(); y++) {
+					if (img1.getRGB(x, y) != img2.getRGB(x, y))
+						return false;
+				}
+			}
+		} else {
+			return false;
+		}
+		return true;
+	}
+	@Test
+	void loadValidBufferedImageFile() {
+		File file = new File("src/main/resources/static/plain-images/samantha-green.jpeg");
+		BufferedImage ExpectedBufferedImage = null;
+		BufferedImage result = IOUtils.loadFileAsBufferedImage("samantha");
+		try {
+			ExpectedBufferedImage = ImageIO.read(file);
+		} catch (IOException e) {
+				e.printStackTrace();
+				System.exit(0);
+		}
+		Assertions.assertEquals(bufferedImagesEqual(ExpectedBufferedImage, result), true);
+	}
 
 }
