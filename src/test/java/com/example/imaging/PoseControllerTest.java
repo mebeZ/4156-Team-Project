@@ -14,15 +14,16 @@ public class PoseControllerTest {
 	public static void loadLocally(){
 		OpenCV.loadLocally();
 	}
-    
-@Test
+
+    // 1a. Test for a forward-facing face, yaw angle should be near 0
+    @Test
     void testForwardFacingFace() throws Exception {
         String imageName = "forward_facing.jpg"; // This image should be of a person facing forward
         double yawAngle = PoseController.getYawAngle(imageName);
         assertTrue(Math.abs(yawAngle) < 15.0, "Expected yaw angle to be less than 15 degrees for a forward-facing face");
     }
 
-    // 3b. Test for a non-forward-facing face, yaw angle should be significant
+    // 1b. Test for a non-forward-facing face, yaw angle should be significant
     @Test
     void testNonForwardFacingFace() throws Exception {
         String imageName = "profile_facing.jpg"; // This image should be of a person facing sideways
