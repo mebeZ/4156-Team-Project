@@ -41,22 +41,38 @@ public class IOUtilsTest {
 	public static void loadLocally(){
 		OpenCV.loadLocally();
 	}
-     
+
+	/*Start of unit tests for method loadFileAsMat
+	*
+	* Test invalid file input
+	* */
     @Test
 	void loadInvalidImageFile() {
 		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile("foo.txt")); // foo.txt is an invalid file
 	}
 
+	/*Start of unit tests for method loadFileAsMat
+	 *
+	 * Test empty input
+	 * */
 	@Test 
 	void loadImageFromEmptyString() {
 		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile(""));
 	}
 
+	/*Start of unit tests for method loadFileAsMat
+	 *
+	 * Test null input
+	 * */
 	@Test
 	void loadImageFromNULL() {
 		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile(null));
 	}
 
+	/*Start of unit tests for method loadFileAsMat
+	 *
+	 * Test valid input
+	 * */
 	@Test
 	void loadValidImageFile() {
         Mat result = IOUtils.loadFileAsMat("samantha");
@@ -65,6 +81,10 @@ public class IOUtilsTest {
         Assertions.assertEquals(expected.cols(), result.cols());
 	}
 
+	/*Start of unit tests for method loadFileAsMat
+	 *
+	 * Test multiple valid inputs but one read the first one
+	 * */
 	@Test
 	void multipleValidImageFile() {
 		File mockImage = new File("src/main/resources/static/images/mock-images/");
@@ -105,21 +125,38 @@ public class IOUtilsTest {
 		//bar.delete();
 	}
 
+	/*Start of unit tests for method loadFileAsBufferedImage
+	 *
+	 * Test invalid file input
+	 * */
 	@Test
 	void loadInvalidBufferedImageFile() {
 		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile("foo.txt"));
 	}
 
+	/*Start of unit tests for method loadFileAsBufferedImage
+	 *
+	 * Test empty file input
+	 * */
 	@Test
 	void loadBufferedImageFromEmptyString() {
 		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile(""));
 
 	}
+
+	/*Start of unit tests for method loadFileAsBufferedImage
+	 *
+	 * Test null file input
+	 * */
 	@Test
 	void loadBufferedImageFromNULL() {
 		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile(null));
 	}
 
+	/*Helper function for test valid file input for loadFileAsBufferedImage
+	 *
+	 * Compare two BufferedImage object and check equals for their width, height and RGB
+	 * */
 	boolean bufferedImagesEqual(BufferedImage img1, BufferedImage img2) {
 		if (img1.getWidth() == img2.getWidth() && img1.getHeight() == img2.getHeight()) {
 			for (int x = 0; x < img1.getWidth(); x++) {
@@ -133,6 +170,11 @@ public class IOUtilsTest {
 		}
 		return true;
 	}
+
+	/*Start of unit tests for method loadFileAsBufferedImage
+	 *
+	 * Test valid file input
+	 * */
 	@Test
 	void loadValidBufferedImageFile() {
 		File file = new File("src/main/resources/static/plain-images/samantha-green.jpeg");
