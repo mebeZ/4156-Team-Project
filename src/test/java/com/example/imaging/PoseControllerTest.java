@@ -18,7 +18,7 @@ public class PoseControllerTest {
     // 1a. Test for a forward-facing face, yaw angle should be near 0
     @Test
     void testForwardFacingFace() throws Exception {
-        String imageName = "forward_facing.jpg"; // This image should be of a person facing forward
+        String imageName = "forward_facing.jpg"; //  facing forward
         double yawAngle = PoseController.getYawAngle(imageName);
         assertTrue(Math.abs(yawAngle) < 15.0, "Expected yaw angle to be less than 15 degrees for a forward-facing face");
     }
@@ -26,7 +26,7 @@ public class PoseControllerTest {
     // 1b. Test for a non-forward-facing face, yaw angle should be significant
     @Test
     void testNonForwardFacingFace() throws Exception {
-        String imageName = "profile_facing.jpg"; // This image should be of a person facing sideways
+        String imageName = "profile_facing.jpg"; //  facing sideways
         double yawAngle = PoseController.getYawAngle(imageName);
         assertFalse(Math.abs(yawAngle) < 15.0, "Expected yaw angle to be greater than 15 degrees for a non-forward-facing face");
     }
