@@ -114,7 +114,29 @@ public class PoseController {
         } else {
             System.out.println("Face is not oriented forward");
         }
+        
+        // face centered
+        double faceCenterX = facialLandmarks.stream().mapToDouble(p -> p.x).average().orElse(Double.NaN);
+        double faceCenterY = facialLandmarks.stream().mapToDouble(p -> p.y).average().orElse(Double.NaN);
 
+        // Define separate thresholds for x and y
+        double xThreshold = 0.1; // 10% for x-axis
+        double yThreshold = 0.1;  // 10% for y-axis
+
+        // Image center
+        double centerX = size.width / 2;
+        double centerY = size.height / 2;
+
+        // Check if the face is centered in the image
+        boolean isCenteredX = Math.abs(faceCenterX - centerX) <= xThreshold * size.width;
+        boolean isCenteredY = Math.abs(faceCenterY - centerY) <= yThreshold * size.height;
+
+        if (isCenteredX && isCenteredY) {
+          System.out.println("Face is centered in the image");
+        } else {
+          System.out.println("Face is not centered in the image");
+        }
+        
         MatOfPoint2f noseEndPoint2D = new MatOfPoint2f();
         MatOfPoint3f noseEndPoint3D = new MatOfPoint3f(new Point3(0.0, 0.0, 1000.0));
 
