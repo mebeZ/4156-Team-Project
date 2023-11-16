@@ -13,6 +13,7 @@ file (`pom.xml`) and prompt to configure Maven.
 ## Testing
 - Unit tests are in `/src/test/java/com/example
 /imaging/`
+- Run test classes under the directory.
 
 ## API Endpoints
 `/pose-angle`
