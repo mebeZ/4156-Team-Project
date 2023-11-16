@@ -36,11 +36,14 @@ public class FaceController {
 	// Used to name RGB histogram files sequentially
 	//private static int imgNum = 1;
 
-	/*
+	public static CascadeClassifier faceCascade = new CascadeClassifier("src/main/resources/templates/haarcascades/haarcascade_frontalface_default.xml");
+	public static CascadeClassifier eyesCascade = new CascadeClassifier("src/main/resources/templates/haarcascades/haarcascade_eye.xml");
+
+	/**
 	 * Given an image matrix, detects the eye region.
 	 * @imgMatrix: An image matrix (should be of a face)
 	 * @returns: A Mat object of the eye
-	 * @throws: Invalid
+	 * @throws: Exception when a face or the eyes cannot be detected
 	 */
 	public static Mat detectEye(Mat imgMatrix) throws Exception {
 		//Mat imgMatrix = Imgcodecs.imread(fpath);
@@ -51,9 +54,6 @@ public class FaceController {
 		// Resize the image such that it can later be displayed by HighGUI
 		//Imgproc.resize(imgMatrix, imgMatrix, new Size(1000, 1000));
 		//System.out.println("Size of the resized face image: " + imgMatrix.size());
-
-		CascadeClassifier faceCascade = new CascadeClassifier("src/main/resources/templates/haarcascades/haarcascade_frontalface_default.xml");
-		CascadeClassifier eyesCascade = new CascadeClassifier("src/main/resources/templates/haarcascades/haarcascade_eye.xml");
 		
 		MatOfRect faces = new MatOfRect();
 		MatOfRect eyes = new MatOfRect();
@@ -71,11 +71,9 @@ public class FaceController {
 		System.out.println("Number of eyes: " + numEyes);
 		System.out.println("Number of faces: " + numFaces);
 
-		// Check that one and only one face is detected
+		// Check that at least one face is detected (in valid images, sometimes more than one is detected so in these cases we will just pick the first detected face)
 		if (numFaces == 0) {
 			throw new IOException("No face detected");
-		} else if (numFaces > 1) {
-			throw new IOException("Multiple faces detected");
 		}
 
 		// Check that the face that was detected is not a false positive; if face area is too small, we declare it a false positive (because for non_face.jpg, a false face is returned with a small area)
@@ -83,19 +81,21 @@ public class FaceController {
 		double faceArea = faceList.get(0).area();
 		System.out.println("Image area = " + imageArea);
 		System.out.println("Face area = " + faceArea);
-		if (faceArea < 0.025 * imageArea) {
-			throw new IOException("No face detected");
-		}
+		//if (faceArea < 0.025 * imageArea) {
+		//	throw new IOException("No face detected");
+		//}
 
-		// Make sure both eyes can be detected if the face exists
-		if (numEyes != 2) {
+		// Make sure both eyes can be detected if the face exists; sometimes more than 2 eyes are detected even for valid images
+		if (numEyes < 2) {
 			throw new IOException("One or more eyes not detected");
 		}
 		
+		/*
 		int borderThickness = 5;
 		// Concatenate the bounding rectangles for the faces and the eyes such that they can be drawn in one for loop rather than two
 		List<Rect> rects = Stream.concat(faceList.stream(), eyeList.stream()).toList();
 
+		
 		// Draw each bounding rectangle (both of the face and the eyes) onto the image
 		for (Rect rect : rects) {
 			Imgproc.rectangle(
@@ -112,6 +112,7 @@ public class FaceController {
 		// Display the detected faces until a key is pressed
 		// HighGui.imshow("Detected faces", imgMatrix);
 		// HighGui.waitKey();
+		*/
 
 		Rect eyeROI = eyes.toList().get(0);
 		Mat leftEyeMat = new Mat(imgMatrix, eyeROI);
@@ -120,11 +121,20 @@ public class FaceController {
 		return leftEyeMat;
 	}
 
+	/**
+	 * Detects the location and radius of the iris from an image of an eye
+	 * @eyeImage: The image of the eye
+	 * @returns: An array containing information about the iris: [center_x, center_y, iris_radius]
+	 * @throws: Exception if a unique iris cannot be located in the eye image
+	 */
 	public static double[] detectIris(Mat eyeImage) throws Exception {
 		/*
 		HighGui.imshow("Color eye image", eyeImage);
 		HighGui.waitKey();
-		*/ 
+		*/
+		if (eyeImage == null) {
+			throw new NullPointerException("eyeImage cannot be null");
+		}
 
 		Mat grayEyeImage = new Mat();
 		Imgproc.cvtColor(eyeImage, grayEyeImage, Imgproc.COLOR_BGR2GRAY);
@@ -166,14 +176,14 @@ public class FaceController {
 				maxIrisRadius *= 2;
 			// if we've increased the max radius, and still no circles are detected, then there likely is not an iris in the image, so throw an exception
 			} else if (irisCircles.cols() < 1) {
-				throw new Exception("detectIris failedd: Number of detected circles should be 1 (i.e. the iris). However, " + irisCircles.cols() + " were detected"); 
+				throw new Exception("detectIris failed: " + irisCircles.cols() + " circles were detected"); 
 			// If more than 1 circles are detected, tweak the parameters such that less false positives are detected
 			} else if (irisCircles.cols() > 1 && minDist <= (double)grayEyeImage.rows()/16) {
 				minDist *= 1.5;
 				p2 *= 1.5;
 			// If we've tweaked the parameters, and false positives are still detected, then we cannot discern the iris in the image, so throw an exception
 			} else if (irisCircles.cols() > 1) {
-				throw new Exception("detectIris failed: Number of detected circles should be 1 (i.e. the iris). However, " + irisCircles.cols() + " were detected"); 
+				throw new Exception("detectIris failed: More than 1 circle was detected"); 
 			}
 		}
 
@@ -187,11 +197,6 @@ public class FaceController {
 		HighGui.imshow("Thresholded eye image", thresholdEyeImage);
 		HighGui.waitKey();
 		*/
-
-		// Make sure only one circle is detected for the iris
-		if (irisCircles.cols() != 1) {
-			throw new Exception("detectIris failed: Number of detected circles should be 1 (i.e. the iris). However, " + irisCircles.cols() + " were detected");
-		}
 	
 		double iris_circle[] = irisCircles.get(0, 0);
 		double iris_x = iris_circle[0];

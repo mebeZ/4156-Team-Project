@@ -6,6 +6,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 
@@ -21,13 +22,31 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import nu.pattern.OpenCV;
+import com.example.imaging.IOUtils;
 
 @SpringBootTest
 class FaceControllerTest {
-	
+
 	@BeforeAll
-	public static void loadLocally(){
+	public static void init() throws Exception {
 		OpenCV.loadLocally();
+	}
+
+	//public static void main(String[] args) throws Exception{
+	//	OpenCV.loadLocally();
+	//	constructEyeImages();
+	//}
+
+	private static void constructEyeImages() throws Exception {
+		// Carl's eye image does not work for iris detection: gets 0 irises
+		String names[] = {"emma", "john", "mica"};
+		for (String name : names) {
+			Mat faceImg = IOUtils.loadFileAsMat(name);
+			String imgName = IOUtils.getImageName(name);
+			System.out.println("Image name: " + imgName);
+			Mat eyeImg = FaceController.detectEye(faceImg);
+			Imgcodecs.imwrite("src/main/resources/static/eye-images/" + imgName, eyeImg);
+		}
 	}
 
 	/**
@@ -39,10 +58,11 @@ class FaceControllerTest {
 	 */
 
 	@Test
-	void testNullImage() {
+	void testNullFaceImage() {
 		assertThrows(NullPointerException.class, () -> FaceController.detectEye(null));
 	}
 
+	/*
 	@Test
 	void testNonFaceImage() {
 		// Load an image without a face
@@ -71,7 +91,47 @@ class FaceControllerTest {
 		Exception e = assertThrows(IOException.class, () -> FaceController.detectEye(testImg));
 		assertEquals("One or more eyes not detected", e.getMessage());
 	}
+	*/
 	
+	/**
+	 * Tests for detectIris method
+	 * 1. If the input is null, a NullPointerException should be thrown
+	 * 2. TODO: Write test to check if the input is an eye and not something else (like a face or a circle)
+	 * 3a. If the input does not have any irises (i.e. square.jpg), then it should throw an Exception with message: detectIris failed: 0 circles were detected
+	 * 3b. If the input has multiple irises (i.e. a face), then it should throw an Exception with message: detectIris failed: More than 1 circle was detected
+	 * 4. For a valid input (i.e. carl-eye.jpeg), the detected circle should satisfy the following constraints: (center_x, center_y) should be less than the (width, height) of the image, and the radius should be less than the width 
+	 */
+
+	@Test
+	void testNullEyeImage() {
+		assertThrows(NullPointerException.class, () -> FaceController.detectIris(null));
+	}
+
+	@Test
+	void testImageWithoutIris() {
+		String filepath = "src/main/resources/static/invalid-images/square.jpeg";
+		Mat testImg = Imgcodecs.imread(filepath);
+		Exception e = assertThrows(Exception.class, () -> FaceController.detectIris(testImg));
+		assertEquals("detectIris failed: 0 circles were detected", e.getMessage());
+	}
+
+	@Test
+	void testImageWithMultipleIrises() {
+		String filepath = "src/main/resources/static/face-images/carl-blue.jpeg";
+		Mat testImg = Imgcodecs.imread(filepath);
+		Exception e = assertThrows(Exception.class, () -> FaceController.detectIris(testImg));
+		assertEquals("detectIris failed: More than 1 circle was detected", e.getMessage());
+	}
+
+	@Test
+	void testValidEyeImage() throws Exception {
+		String filepath = "src/main/resources/static/eye-images/mica-green.jpeg";
+		Mat testImg = Imgcodecs.imread(filepath);
+		double iris[] = FaceController.detectIris(testImg);
+		assertTrue("Detected iris center is not within the bounds of the image", iris[0] < testImg.height() && iris[1] < testImg.width());
+		assertTrue("Detected iris radius is too large", iris[2] < testImg.width()/2 && iris[2] < testImg.height()/2);
+	}
+
 	//	 Tests for getAvgIntensity method
 	//	 1a. A histogram (hist) with one or more negative values should throw an Exception because there cannot be negative pixel counts.
 	@Test

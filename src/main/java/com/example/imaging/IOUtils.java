@@ -45,14 +45,13 @@ public class IOUtils {
         throw new FileNotFoundException("No image file containing name = " + name);
     }
 
-    public static String getImageName(String name) {
-        String fp = null;
-        try {
-            fp = getPathToFile(name);
-        } catch (FileNotFoundException e) {
-            // Rethrow as an IllegalArgumentException
-            throw new IllegalArgumentException("No image file containing name = " + name);
-        }
+    /**
+     * Given a substring of the name of an image, get the full image name
+     * @param name: The substring of the name which we use to lookup the image (i.e. samantha)
+     * @return: The full image name (i.e. samantha-green.jpg)
+     */
+    public static String getImageName(String name) throws FileNotFoundException {
+        String fp = getPathToFile(name);
 
         //return fp.substring(fp.lastIndexOf("\\") + 1);
         // Use Paths.get(fp).getFileName() to extract only the filename without the path

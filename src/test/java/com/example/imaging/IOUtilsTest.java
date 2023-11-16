@@ -60,7 +60,7 @@ public class IOUtilsTest {
 	@Test
 	void loadValidImageFile() {
 		Mat result = IOUtils.loadFileAsMat("samantha");
-		Mat expected = Imgcodecs.imread( "src/main/resources/static/plain-images/samantha-green.jpeg");
+		Mat expected = Imgcodecs.imread( "src/main/resources/static/face-images/samantha-green.jpeg");
 		Assertions.assertEquals(expected.rows(), result.rows());
 		Assertions.assertEquals(expected.cols(), result.cols());
 	}
@@ -69,8 +69,8 @@ public class IOUtilsTest {
 	@Test
 	void loadImageFromFolderWithOnlySubfoldersNoMatch() {
 		// Create subfolders without matching names
-		File subfolder1 = new File("src/main/resources/static/plain-images/subfolder1");
-		File subfolder2 = new File("src/main/resources/static/plain-images/subfolder2");
+		File subfolder1 = new File("src/main/resources/static/face-images/subfolder1");
+		File subfolder2 = new File("src/main/resources/static/face-images/subfolder2");
 		subfolder1.mkdirs();
 		subfolder2.mkdirs();
 
@@ -87,16 +87,16 @@ public class IOUtilsTest {
 	// d. In a mock image folder there is one or more folders
 	@Test
 	void loadImageFromFolderWithSubfoldersAndImagesFirstMatchingSubfolder() {
-		File subfolder1 = new File("src/main/resources/static/plain-images/subfolder1");
-		File subfolder2 = new File("src/main/resources/static/plain-images/subfolder2");
+		File subfolder1 = new File("src/main/resources/static/face-images/subfolder1");
+		File subfolder2 = new File("src/main/resources/static/face-images/subfolder2");
 		subfolder1.mkdirs();
 		subfolder2.mkdirs();
 
 		// Create an image file in both subfolders
-		Path sourcePath1 = Paths.get("src/main/resources/static/plain-images/samantha-green.jpeg");
-		Path destinationPath1 = Paths.get("src/main/resources/static/plain-images/subfolder1/samantha-green.jpeg");
-		Path sourcePath2 = Paths.get("src/main/resources/static/plain-images/carl-blue.jpeg");
-		Path destinationPath2 = Paths.get("src/main/resources/static/plain-images/subfolder2/carl-blue.jpeg");
+		Path sourcePath1 = Paths.get("src/main/resources/static/face-images/samantha-green.jpeg");
+		Path destinationPath1 = Paths.get("src/main/resources/static/face-images/subfolder1/samantha-green.jpeg");
+		Path sourcePath2 = Paths.get("src/main/resources/static/face-images/carl-blue.jpeg");
+		Path destinationPath2 = Paths.get("src/main/resources/static/face-images/subfolder2/carl-blue.jpeg");
 
 		try {
 			Files.copy(sourcePath1, destinationPath1, StandardCopyOption.REPLACE_EXISTING);
@@ -145,7 +145,7 @@ public class IOUtilsTest {
 		mockImage.mkdirs();
 
 		//copy samantha-green.jpeg to mock-images folder
-		Path sourcePath = Paths.get("src/main/resources/static/plain-images/samantha-green.jpeg");
+		Path sourcePath = Paths.get("src/main/resources/static/face-images/samantha-green.jpeg");
 		Path destinationPath = Paths.get("src/main/resources/static/images/mock-images/samantha-green.jpeg");
 		try {
 			Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
@@ -155,7 +155,7 @@ public class IOUtilsTest {
 		}
 
 		//copy carl-blue.jpeg to mock-images folder and rename as samantha-blue.jpeg
-		sourcePath = Paths.get("src/main/resources/static/plain-images/carl-blue.jpeg");
+		sourcePath = Paths.get("src/main/resources/static/face-images/carl-blue.jpeg");
 		destinationPath = Paths.get("src/main/resources/static/images/mock-images/samantha-blue.jpeg");
 		try {
 			Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
@@ -209,7 +209,7 @@ public class IOUtilsTest {
 	}
 	@Test
 	void loadValidBufferedImageFile() {
-		File file = new File("src/main/resources/static/plain-images/samantha-green.jpeg");
+		File file = new File("src/main/resources/static/face-images/samantha-green.jpeg");
 		BufferedImage ExpectedBufferedImage = null;
 		BufferedImage result = IOUtils.loadFileAsBufferedImage("samantha");
 		try {
@@ -249,33 +249,33 @@ public class IOUtilsTest {
 
 	// a. If we pass in a valid file name, we should get the correct image name and check its correctness.
 	@Test
-	void testFileNameWithValidNameAndCheckCorrectness() {
+	void testFileNameWithValidNameAndCheckCorrectness() throws FileNotFoundException {
 		String imageName = IOUtils.getImageName("carl");
 		Assertions.assertTrue(imageName.contains("carl"));
 		Assertions.assertTrue(imageName.endsWith(".jpeg"));
 	}
 
-	// b. If we pass in a non-existent name, we should get an IllegalArgumentException.
+	// b. If we pass in a non-existent name, we should get a FileNotFoundException.
 	@Test
 	void testFileNameWithNonExistentName() {
-		assertThrows(IllegalArgumentException.class, () -> IOUtils.getImageName("nonexistentname"));
+		assertThrows(FileNotFoundException.class, () -> IOUtils.getImageName("nonexistentname"));
 	}
 
-	// c. If we pass in an empty string, we should get an IllegalArgumentException.
+	// c. If we pass in an empty string, we should get a FileNotFoundException.
 	@Test
 	void testFileNameFromEmptyString() {
-		assertThrows(IllegalArgumentException.class, () -> IOUtils.getImageName(""));
+		assertThrows(FileNotFoundException.class, () -> IOUtils.getImageName(""));
 	}
 
-	// d. If we pass in a null value, we should get an IllegalArgumentException.
+	// d. If we pass in a null value, we should get a FileNotFoundException.
 	@Test
 	void testFileNameWithNull() {
-		assertThrows(IllegalArgumentException.class, () -> IOUtils.getImageName(null));
+		assertThrows(FileNotFoundException.class, () -> IOUtils.getImageName(null));
 	}
 
 	// e. If we pass in a valid name, we should get the correct image name.
 	@Test
-	void testFileNameWithValidName() {
+	void testFileNameWithValidName() throws FileNotFoundException {
 		String name = "samantha";
 		String expectedName = "samantha-green.jpeg";
 		String result = IOUtils.getImageName(name);
@@ -288,9 +288,9 @@ public class IOUtilsTest {
 
 	// f. If we pass in a valid name, we should get the correct image name, and the associated image file should exist.
 	@Test
-	void testValidNameReturnsFile() {
+	void testValidNameReturnsFile() throws FileNotFoundException {
 		String imageName = IOUtils.getImageName("samantha");
-		String imagePath = "src/main/resources/static/plain-images/" + imageName;
+		String imagePath = "src/main/resources/static/face-images/" + imageName;
 		File imageFile = new File(imagePath);
 		Assertions.assertTrue(imageFile.exists());
 	} // end of unit tests for the getImageName()
@@ -303,7 +303,7 @@ public class IOUtilsTest {
 //		mockImageFolder.mkdirs();
 //
 //		// Copy valid image files to the mock folder
-//		Path sourcePath1 = Paths.get("src/main/resources/static/plain-images/samantha-green.jpeg");
+//		Path sourcePath1 = Paths.get("src/main/resources/static/face-images/samantha-green.jpeg");
 //		Path destinationPath1 = Paths.get("src/main/resources/static/images/mock-images/samantha-green.jpeg");
 //		try {
 //			Files.copy(sourcePath1, destinationPath1, StandardCopyOption.REPLACE_EXISTING);
@@ -311,7 +311,7 @@ public class IOUtilsTest {
 //			e.printStackTrace();
 //		}
 //
-//		Path sourcePath2 = Paths.get("src/main/resources/static/plain-images/carl-blue.jpeg");
+//		Path sourcePath2 = Paths.get("src/main/resources/static/face-images/carl-blue.jpeg");
 //		Path destinationPath2 = Paths.get("src/main/resources/static/images/mock-images/samantha-blue.jpeg");
 //		try {
 //			Files.copy(sourcePath2, destinationPath2, StandardCopyOption.REPLACE_EXISTING);
