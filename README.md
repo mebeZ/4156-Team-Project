@@ -8,12 +8,17 @@ The group project for COMS 4156: Advanced Software Engineering
 ## Getting Started
 - `git clone` the project.
 - `Open` the project with IntelliJ IDE. The IDE should be able to detect the Maven configuration
-file (`pom.xml`) and prompt to configure Maven. 
+file (`pom.xml`) and prompt to configure Maven.
+- Our project is build with Spring Boot, run the restService in IDLE, which will start running the server at http://localhost:8080
 
-## Testing
+## Unit Testing
 - Unit tests are in `/src/test/java/com/example
 /imaging/`
 - Run test classes under the directory.
+
+## API Testing
+- Our API entry points are tested using Postman.
+- After running the server at http://localhost:8080, start the test
 
 ## API Endpoints
 `/pose-angle`
@@ -26,7 +31,8 @@ file (`pom.xml`) and prompt to configure Maven.
   "name": "name_of_the_image_file",
   "yawAngle": calculated_yaw_angle
 }
-  - In case of an error (e.g., no faces detected, file not found), the application might log the error and terminate
+  - 400: e.g. file not found
+  - 500:IOException, e.g. no face detected
 
 `/eye-color`
 - **Method**: GET
@@ -38,7 +44,8 @@ file (`pom.xml`) and prompt to configure Maven.
   "name": "name_of_the_person",
   "eyeColor": predicted_eye_color
 }
-  - The service terminates on encountering an error, such as failure in eye detection.
+  - 400: e.g. file not found
+  - 500:IOException, e.g. no face detected
 
 ## Style Checker
 - We are using the CheckStyle plugin on IntelliJ to check for potential style warning/errors.
