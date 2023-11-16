@@ -8,7 +8,7 @@ import nu.pattern.OpenCV;
 
 @SpringBootApplication
 public class RestService {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         OpenCV.loadLocally();
         FaceController.getEyeColor("sideways_face");

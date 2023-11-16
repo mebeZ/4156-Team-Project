@@ -390,7 +390,19 @@ public class FaceController {
 	// @RequestParam binds the value of the query parameter name to the value of parameter name in the method
 	// localhost:8080/eye-color?name=carl
 	@GetMapping("/eye-color")
-	public static FaceInfo getEyeColor(@RequestParam(value="name") String name) {
+	public static FaceInfo getEyeColor(@RequestParam(value="name") String name) throws Exception {
+		if (name == null) {
+			throw new NullPointerException("name cannot be null");
+		} 
+
+		// Check to see that the name is valid; will throw a FileNotFoundException if not
+		try {
+			IOUtils.getImageName(name);
+		} catch (FileNotFoundException e) {
+			throw new IllegalArgumentException("Name is invalid");
+		}
+		
+		
 		System.out.println("Loading image file...");
 		Mat faceImage = IOUtils.loadFileAsMat(name);
 		

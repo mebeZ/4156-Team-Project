@@ -158,6 +158,30 @@ class FaceControllerTest {
 		assertEquals("green", FaceController.predictEyeColor(testImg));
 	}
 
+	/*
+	 * Tests for getEyeColor method
+	 * 1a. If name equals null, throws a NullPointerException
+	 * 1b. If name is not found in the images folder (resources/static), throws an IllegalArgument exception
+	 * 2. If name is valid, then FaceInfo.name() == name and FaceInfo.color == color
+	 */
+
+	@Test
+	void getEyeColorForNull() {
+		assertThrows(NullPointerException.class, () -> FaceController.getEyeColor(null));
+	}
+
+	@Test
+	void getEyeColorForInvalid() {
+		assertThrows(IllegalArgumentException.class, () -> FaceController.getEyeColor(""));
+	}
+
+	@Test
+	void getEyeColorForValid() throws Exception {
+		FaceInfo info = FaceController.getEyeColor("samantha");
+		assertEquals("samantha", info.name());
+		assertEquals("green", info.eyeColor());
+	}
+
 	//	 Tests for getAvgIntensity method
 	//	 1a. A histogram (hist) with one or more negative values should throw an Exception because there cannot be negative pixel counts.
 	@Test
