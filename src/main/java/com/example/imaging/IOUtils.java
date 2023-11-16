@@ -15,25 +15,30 @@ public class IOUtils {
     /**
      * Locates a person's image file and load it into memory. If there are multiple valid image files containing a person's name, only the first one is loaded.
      *
-     * @param name is a person's name - must be a valid substring in at least one image file in resources/static/images
+     * @param name is a person's name - must be a valid substring in at least one image file in resources/static
      * @exception FileNotFoundException if name does not appear in at least one image file
      * @returns: On success, a matrix representing the loaded image file; on failure, a FileNotFoundException
      */
     // loadImageFile
     public static String getPathToFile(String name) throws FileNotFoundException {
-        File imagesFolder = new File("src/main/resources/static/plain-images");
-        File[] imageFiles = imagesFolder.listFiles();
-        for (int i = 0; i < imageFiles.length; i++) {
-            if (imageFiles[i].isFile()) {
-                String filename = imageFiles[i].getName();
-                System.out.println(filename);
-                if (name == null || name.equals("")){
-                    throw new FileNotFoundException("No image file containing name = " + name);
-                }
-                System.out.println(filename.indexOf(name));
-                if (filename.indexOf(name) >= 0) {
-                    String filepath = imageFiles[i].getAbsolutePath();
-                    return filepath;
+        // TODO: If name is null, change the exception that is thrown and change the unit tests
+        if (name == null || name.equals("")){
+            throw new FileNotFoundException("No image file containing name = " + name);
+        }
+        
+        File imagesFolder = new File("src/main/resources/static");
+        // TODO: Refactor getPathToFile so that it searches recursively starting from a sub-directory
+        for (File folder : imagesFolder.listFiles()) {
+            for (File file : folder.listFiles()) {
+                if (file.isFile()) {
+                    String filename = file.getName();
+                    System.out.println(filename);
+                    
+                    System.out.println(filename.indexOf(name));
+                    if (filename.indexOf(name) >= 0) {
+                        String filepath = file.getAbsolutePath();
+                        return filepath;
+                    }
                 }
             }
         }

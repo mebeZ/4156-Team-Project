@@ -10,6 +10,7 @@ import com.github.sh0nk.matplotlib4j.NumpyUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 //import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 //import org.opencv.core.Size;
-//import org.opencv.highgui.HighGui;
+import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
@@ -35,11 +36,17 @@ public class FaceController {
 	// Used to name RGB histogram files sequentially
 	//private static int imgNum = 1;
 
-	public static Mat detectEye(Mat imgMatrix) {
+	/*
+	 * Given an image matrix, detects the eye region.
+	 * @imgMatrix: An image matrix (should be of a face)
+	 * @returns: A Mat object of the eye
+	 * @throws: Invalid
+	 */
+	public static Mat detectEye(Mat imgMatrix) throws Exception {
 		//Mat imgMatrix = Imgcodecs.imread(fpath);
-		//if (imgMatrix == null) {
-		//	throw new FileNotFoundException(fpath + "is an invalid file path");
-		//}
+		if (imgMatrix == null) {
+			throw new NullPointerException("imgMatrix cannot be null");
+		}
 		
 		// Resize the image such that it can later be displayed by HighGUI
 		//Imgproc.resize(imgMatrix, imgMatrix, new Size(1000, 1000));
@@ -51,12 +58,43 @@ public class FaceController {
 		MatOfRect faces = new MatOfRect();
 		MatOfRect eyes = new MatOfRect();
 
+		// Detect all bounding rectangles of faces and eyes in the image
 		faceCascade.detectMultiScale(imgMatrix, faces);
 		eyesCascade.detectMultiScale(imgMatrix, eyes);
-		int borderThickness = 5;
 
+		List<Rect> faceList = faces.toList();
+		List<Rect> eyeList = eyes.toList();
+
+		int numFaces = faceList.size();
+		int numEyes = eyeList.size();
+
+		System.out.println("Number of eyes: " + numEyes);
+		System.out.println("Number of faces: " + numFaces);
+
+		// Check that one and only one face is detected
+		if (numFaces == 0) {
+			throw new IOException("No face detected");
+		} else if (numFaces > 1) {
+			throw new IOException("Multiple faces detected");
+		}
+
+		// Check that the face that was detected is not a false positive; if face area is too small, we declare it a false positive (because for non_face.jpg, a false face is returned with a small area)
+		double imageArea = imgMatrix.width() * imgMatrix.height();
+		double faceArea = faceList.get(0).area();
+		System.out.println("Image area = " + imageArea);
+		System.out.println("Face area = " + faceArea);
+		if (faceArea < 0.025 * imageArea) {
+			throw new IOException("No face detected");
+		}
+
+		// Make sure both eyes can be detected if the face exists
+		if (numEyes != 2) {
+			throw new IOException("One or more eyes not detected");
+		}
+		
+		int borderThickness = 5;
 		// Concatenate the bounding rectangles for the faces and the eyes such that they can be drawn in one for loop rather than two
-		List<Rect> rects = Stream.concat(faces.toList().stream(), eyes.toList().stream()).toList();
+		List<Rect> rects = Stream.concat(faceList.stream(), eyeList.stream()).toList();
 
 		// Draw each bounding rectangle (both of the face and the eyes) onto the image
 		for (Rect rect : rects) {
@@ -295,8 +333,16 @@ public class FaceController {
 		
 		// We do not include the edge intensities of 0 and 255 because their counts were empirically found to be quite large and could throw of the brightness avg calculation
 		int intensity_range[] = {1, intensity_max-1};
-		double blue_avg_intensity = getAvgIntensity(blue_counts, intensity_range);
-		double green_avg_intensity = getAvgIntensity(green_counts, intensity_range);
+		double blue_avg_intensity = 0.0;
+		double green_avg_intensity = 0.0;
+
+		try {
+			blue_avg_intensity = getAvgIntensity(blue_counts, intensity_range);
+			green_avg_intensity = getAvgIntensity(green_counts, intensity_range);
+		} catch (Exception e) {
+			e.getMessage();
+			System.exit(0);
+		}
 		
 		// Purely based on empirical observation
 		if (blue_avg_intensity > green_avg_intensity) {
@@ -312,10 +358,17 @@ public class FaceController {
 	 * @param range is the span of intensities that we include in our calculation. range = [lowest_intensity, highest_intensity]. For example, specifying range={1,254} would tell us to exclude pixels with brightness of 0 and 255. Note: The first value in range cannot be less than the first index of hist (0) and the second value in range cannot be greater than the last index of hist (hist.length - 1). 
 	 * @returns a double representing the weighted average intensity of the pixels whose brightness falls within our specified range. 
 	 */
-	public static double getAvgIntensity(List<Double> hist, int[] range) {
+	public static double getAvgIntensity(List<Double> hist, int[] range) throws Exception {
 		int numerator = 0;
 		int denominator = 0;
+		if (range.length != 2) {
+			throw new Exception("@range does not have length equal to 2");
+		}
+
 		for (int i = range[0]; i <= range[1]; i++) {
+			if (hist.get(i) < 0) {
+				throw new Exception("No hist element can be negative");
+			}
 			numerator += i * hist.get(i);
 			denominator += hist.get(i);
 		}
@@ -333,7 +386,13 @@ public class FaceController {
 		Mat faceImage = IOUtils.loadFileAsMat(name);
 		
 		System.out.println("Image file " + name + " successfully loaded");
-		Mat eyeImage = detectEye(faceImage);
+		Mat eyeImage = null;
+		try {
+			eyeImage = detectEye(faceImage);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
 		System.out.println("Detected " + name + "'s eye...");
 		String eyeColor = predictEyeColor(eyeImage);
 		System.out.println(name + "'s eye color: " + eyeColor);
