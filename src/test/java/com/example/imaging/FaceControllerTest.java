@@ -132,6 +132,32 @@ class FaceControllerTest {
 		assertTrue("Detected iris radius is too large", iris[2] < testImg.width()/2 && iris[2] < testImg.height()/2);
 	}
 
+	/*
+	 * Tests for predictEyeColor method
+	 * 1. A null eyeRegion should throw a NullPointerException
+	 * 2. A blue eye should return "blue"
+	 * 3. A green eye should return "green"
+	 */
+
+	@Test
+	void predictColorOnNull() {
+		assertThrows(NullPointerException.class, () -> FaceController.predictEyeColor(null));
+	}
+
+	@Test
+	void predictBlueEyeColor() {
+		String filepath = "src/main/resources/static/eye-images/john-blue.jpeg";
+		Mat testImg = Imgcodecs.imread(filepath);
+		assertEquals("blue", FaceController.predictEyeColor(testImg));
+	}
+
+	@Test
+	void predictGreenEyeColor() {
+		String filepath = "src/main/resources/static/eye-images/mica-green.jpeg";
+		Mat testImg = Imgcodecs.imread(filepath);
+		assertEquals("green", FaceController.predictEyeColor(testImg));
+	}
+
 	//	 Tests for getAvgIntensity method
 	//	 1a. A histogram (hist) with one or more negative values should throw an Exception because there cannot be negative pixel counts.
 	@Test

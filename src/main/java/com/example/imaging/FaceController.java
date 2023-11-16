@@ -237,6 +237,10 @@ public class FaceController {
 	}
 
 	public static String predictEyeColor(Mat eyeRegion) {
+		if (eyeRegion == null) {
+			throw new NullPointerException();
+		}
+		
 		double iris_circle[] = null;
 		try {
 			iris_circle = detectIris(eyeRegion);
