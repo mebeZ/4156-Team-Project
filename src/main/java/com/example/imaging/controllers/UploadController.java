@@ -20,11 +20,13 @@ import com.example.imaging.models.Image;
 public class UploadController {
 
     @GetMapping("/upload-image")
-    @ResponseBody
-    public static String uploadImage(@RequestParam(value="localPath") String path) throws Exception {
+    public static Image uploadImage(@RequestParam(value="localPath") String path) throws Exception {
         Mat img = IOUtils.loadFileAsMat(path);
         String imgName = IOUtils.getImageName(path);
-        Imgcodecs.imwrite("src/main/resources/static/face-images/" + imgName, img);
-        return imgName + " successfully uploaded";
+        String filepath = "src/main/resources/static/face-images/" + imgName;
+        Imgcodecs.imwrite(filepath, img);
+        Image faceImage = new Image(filepath);
+        //System.out.println(faceImage);
+        return faceImage;
     }
 }
