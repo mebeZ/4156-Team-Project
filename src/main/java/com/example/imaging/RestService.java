@@ -11,7 +11,7 @@ public class RestService {
     public static void main(String[] args) throws Exception {
         //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         OpenCV.loadLocally();
-        FaceController.getEyeColor("sideways_face");
-        //SpringApplication.run(RestService.class, args);
+        //FaceController.getEyeColor("sideways_face");
+        SpringApplication.run(RestService.class, args);
     }
 }

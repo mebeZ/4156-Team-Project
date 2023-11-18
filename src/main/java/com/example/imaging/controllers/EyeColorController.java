@@ -1,9 +1,11 @@
-package com.example.imaging;
+package com.example.imaging.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.imaging.IOUtils;
+import com.example.imaging.models.EyeColorInfo;
 import com.github.sh0nk.matplotlib4j.NumpyUtils;
 //import com.github.sh0nk.matplotlib4j.Plot;
 //import com.github.sh0nk.matplotlib4j.PythonExecutionException;
@@ -32,7 +34,7 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
 @RestController
-public class FaceController {
+public class EyeColorController {
 	// Used to name RGB histogram files sequentially
 	//private static int imgNum = 1;
 
@@ -390,7 +392,7 @@ public class FaceController {
 	// @RequestParam binds the value of the query parameter name to the value of parameter name in the method
 	// localhost:8080/eye-color?name=carl
 	@GetMapping("/eye-color")
-	public static FaceInfo getEyeColor(@RequestParam(value="name") String name) throws Exception {
+	public static EyeColorInfo getEyeColor(@RequestParam(value="name") String name) throws Exception {
 		if (name == null) {
 			throw new NullPointerException("name cannot be null");
 		} 
@@ -422,6 +424,6 @@ public class FaceController {
 		// String eyeColor = "green";
 		// detectEye("src/main/resources/static/images/img1.jpeg");
 		// Use Haar Cascades to detect the eye color from an image
-		return new FaceInfo(name, eyeColor);
+		return new EyeColorInfo(name, eyeColor);
 	}
 }

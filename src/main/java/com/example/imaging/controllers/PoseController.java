@@ -1,4 +1,4 @@
-package com.example.imaging;
+package com.example.imaging.controllers;
 
 import nu.pattern.OpenCV;
 import org.opencv.core.*;
@@ -11,6 +11,8 @@ import org.opencv.calib3d.Calib3d;
 
 import com.emaraic.jdlib.Jdlib;
 import com.emaraic.utils.FaceDescriptor;
+import com.example.imaging.IOUtils;
+import com.example.imaging.models.PoseInfo;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

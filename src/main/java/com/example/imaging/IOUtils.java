@@ -78,13 +78,27 @@ public class IOUtils {
         String filepath = null;
         BufferedImage bufferedImage = null;
         try {
-            filepath = getPathToFile(name);
-            File file = new File(filepath);
+            File file = null;
+            if (name.contains("/")) {
+                file = new File(name);
+            } else {
+                filepath = getPathToFile(name);
+                file = new File(filepath);
+            }
             bufferedImage = ImageIO.read(file);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(0);
         }
         return bufferedImage;
+    }
+
+    /*
+     * Locates the image located at localpath and moves it to static/face-images
+     */
+    public static void uploadLocalImage(String localPath) throws Exception {
+        Mat img = Imgcodecs.imread(localPath);
+        String name = getImageName(localPath);
+        Imgcodecs.imwrite("src/main/resources/static/face-images/" + name, img);
     }
 }

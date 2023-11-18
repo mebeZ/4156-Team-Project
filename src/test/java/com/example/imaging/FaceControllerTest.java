@@ -23,6 +23,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import nu.pattern.OpenCV;
 import com.example.imaging.IOUtils;
+import com.example.imaging.controllers.EyeColorController;
+import com.example.imaging.models.EyeColorInfo;
 
 @SpringBootTest
 class FaceControllerTest {
@@ -44,7 +46,7 @@ class FaceControllerTest {
 			Mat faceImg = IOUtils.loadFileAsMat(name);
 			String imgName = IOUtils.getImageName(name);
 			System.out.println("Image name: " + imgName);
-			Mat eyeImg = FaceController.detectEye(faceImg);
+			Mat eyeImg = EyeColorController.detectEye(faceImg);
 			Imgcodecs.imwrite("src/main/resources/static/eye-images/" + imgName, eyeImg);
 		}
 	}
@@ -59,7 +61,7 @@ class FaceControllerTest {
 
 	@Test
 	void testNullFaceImage() {
-		assertThrows(NullPointerException.class, () -> FaceController.detectEye(null));
+		assertThrows(NullPointerException.class, () -> EyeColorController.detectEye(null));
 	}
 
 	/*
@@ -104,14 +106,14 @@ class FaceControllerTest {
 
 	@Test
 	void testNullEyeImage() {
-		assertThrows(NullPointerException.class, () -> FaceController.detectIris(null));
+		assertThrows(NullPointerException.class, () -> EyeColorController.detectIris(null));
 	}
 
 	@Test
 	void testImageWithoutIris() {
 		String filepath = "src/main/resources/static/invalid-images/square.jpeg";
 		Mat testImg = Imgcodecs.imread(filepath);
-		Exception e = assertThrows(Exception.class, () -> FaceController.detectIris(testImg));
+		Exception e = assertThrows(Exception.class, () -> EyeColorController.detectIris(testImg));
 		assertEquals("detectIris failed: 0 circles were detected", e.getMessage());
 	}
 
@@ -119,7 +121,7 @@ class FaceControllerTest {
 	void testImageWithMultipleIrises() {
 		String filepath = "src/main/resources/static/face-images/carl-blue.jpeg";
 		Mat testImg = Imgcodecs.imread(filepath);
-		Exception e = assertThrows(Exception.class, () -> FaceController.detectIris(testImg));
+		Exception e = assertThrows(Exception.class, () -> EyeColorController.detectIris(testImg));
 		assertEquals("detectIris failed: More than 1 circle was detected", e.getMessage());
 	}
 
@@ -127,7 +129,7 @@ class FaceControllerTest {
 	void testValidEyeImage() throws Exception {
 		String filepath = "src/main/resources/static/eye-images/mica-green.jpeg";
 		Mat testImg = Imgcodecs.imread(filepath);
-		double iris[] = FaceController.detectIris(testImg);
+		double iris[] = EyeColorController.detectIris(testImg);
 		assertTrue("Detected iris center is not within the bounds of the image", iris[0] < testImg.height() && iris[1] < testImg.width());
 		assertTrue("Detected iris radius is too large", iris[2] < testImg.width()/2 && iris[2] < testImg.height()/2);
 	}
@@ -141,21 +143,21 @@ class FaceControllerTest {
 
 	@Test
 	void predictColorOnNull() {
-		assertThrows(NullPointerException.class, () -> FaceController.predictEyeColor(null));
+		assertThrows(NullPointerException.class, () -> EyeColorController.predictEyeColor(null));
 	}
 
 	@Test
 	void predictBlueEyeColor() {
 		String filepath = "src/main/resources/static/eye-images/john-blue.jpeg";
 		Mat testImg = Imgcodecs.imread(filepath);
-		assertEquals("blue", FaceController.predictEyeColor(testImg));
+		assertEquals("blue", EyeColorController.predictEyeColor(testImg));
 	}
 
 	@Test
 	void predictGreenEyeColor() {
 		String filepath = "src/main/resources/static/eye-images/mica-green.jpeg";
 		Mat testImg = Imgcodecs.imread(filepath);
-		assertEquals("green", FaceController.predictEyeColor(testImg));
+		assertEquals("green", EyeColorController.predictEyeColor(testImg));
 	}
 
 	/*
@@ -167,17 +169,17 @@ class FaceControllerTest {
 
 	@Test
 	void getEyeColorForNull() {
-		assertThrows(NullPointerException.class, () -> FaceController.getEyeColor(null));
+		assertThrows(NullPointerException.class, () -> EyeColorController.getEyeColor(null));
 	}
 
 	@Test
 	void getEyeColorForInvalid() {
-		assertThrows(IllegalArgumentException.class, () -> FaceController.getEyeColor(""));
+		assertThrows(IllegalArgumentException.class, () -> EyeColorController.getEyeColor(""));
 	}
 
 	@Test
 	void getEyeColorForValid() throws Exception {
-		FaceInfo info = FaceController.getEyeColor("samantha");
+		EyeColorInfo info = EyeColorController.getEyeColor("samantha");
 		assertEquals("samantha", info.name());
 		assertEquals("green", info.eyeColor());
 	}
@@ -188,7 +190,7 @@ class FaceControllerTest {
 	void testNegativeValuesInHistogram() {
 		List<Double> hist = Arrays.asList(-1.0, 2.0, 3.0);
 		int[] range = {0, 2};
-		assertThrows(Exception.class, () -> FaceController.getAvgIntensity(hist, range));
+		assertThrows(Exception.class, () -> EyeColorController.getAvgIntensity(hist, range));
 	}
 	
 	//	 1b. A histogram with all values equal to zero should throw an exception because the average brightness is in this case.
@@ -196,7 +198,7 @@ class FaceControllerTest {
 	void testAllZeroHistogram() {
 		List<Double> hist = Arrays.asList(0.0, 0.0, 0.0);
 		int[] range = {0, 2};
-		assertThrows(Exception.class, () -> FaceController.getAvgIntensity(hist, range));
+		assertThrows(Exception.class, () -> EyeColorController.getAvgIntensity(hist, range));
 	}
 	
 	//	 1c. A null histogram should throw an exception
@@ -204,7 +206,7 @@ class FaceControllerTest {
 	void testNullHistogram() {
 		List<Double> hist = null;
 		int[] range = {0, 2};
-		assertThrows(Exception.class, () -> FaceController.getAvgIntensity(hist, range));
+		assertThrows(Exception.class, () -> EyeColorController.getAvgIntensity(hist, range));
 	}
 	
 	
@@ -213,7 +215,7 @@ class FaceControllerTest {
 	void testEmptyHistogram() {
 		List<Double> hist = new ArrayList<>();
 		int[] range = {0, 2};
-		assertThrows(Exception.class, () -> FaceController.getAvgIntensity(hist, range));
+		assertThrows(Exception.class, () -> EyeColorController.getAvgIntensity(hist, range));
 	}
 	
 	//	 2a. If range is incorrectly formatted with the start value below zero, then the method should throw an exception
@@ -221,7 +223,7 @@ class FaceControllerTest {
 	void testInvalidStartValueInRange() {
 		List<Double> hist = Arrays.asList(1.0, 2.0, 3.0);
 		int[] range = {-1, 2};
-		assertThrows(Exception.class, () -> FaceController.getAvgIntensity(hist, range));
+		assertThrows(Exception.class, () -> EyeColorController.getAvgIntensity(hist, range));
 	}
 	
 	//	 2b. If range is incorrectly formatted with the end value greater than hist.length - 1, then the method should throw an exception
@@ -229,7 +231,7 @@ class FaceControllerTest {
 	void testInvalidEndValueInRange() {
 		List<Double> hist = Arrays.asList(1.0, 2.0, 3.0);
 		int[] range = {0, 3};
-		assertThrows(Exception.class, () -> FaceController.getAvgIntensity(hist, range));
+		assertThrows(Exception.class, () -> EyeColorController.getAvgIntensity(hist, range));
 	}
 	
 	//	 2c. If range is incorrectly formatted with both the start value and end value being invalid then the method should throw an exception.
@@ -237,7 +239,7 @@ class FaceControllerTest {
 	void testInvalidStartAndEndValuesInRange() {
 		List<Double> hist = Arrays.asList(1.0, 2.0, 3.0);
 		int[] range = {-1, 3};
-		assertThrows(Exception.class, () -> FaceController.getAvgIntensity(hist, range));
+		assertThrows(Exception.class, () -> EyeColorController.getAvgIntensity(hist, range));
 	}
 	
 	//	 2d. If range is null, the method should through an exception
@@ -245,7 +247,7 @@ class FaceControllerTest {
 	void testNullRange() {
 		List<Double> hist = Arrays.asList(1.0, 2.0, 3.0);
 		int[] range = null;
-		assertThrows(Exception.class, () -> FaceController.getAvgIntensity(hist, range));
+		assertThrows(Exception.class, () -> EyeColorController.getAvgIntensity(hist, range));
 	}
 	
 	
@@ -254,7 +256,7 @@ class FaceControllerTest {
 	void testRangeWithLessThanTwoElements() {
 		List<Double> hist = Arrays.asList(1.0, 2.0, 3.0);
 		int[] range = {0};
-		assertThrows(Exception.class, () -> FaceController.getAvgIntensity(hist, range));
+		assertThrows(Exception.class, () -> EyeColorController.getAvgIntensity(hist, range));
 	}
 	
 	//	 2f. If range has more than two elements, the method should throw an exception
@@ -262,7 +264,7 @@ class FaceControllerTest {
 	void testRangeWithMoreThanTwoElements() {
 		List<Double> hist = Arrays.asList(1.0, 2.0, 3.0);
 		int[] range = {0, 2, 3};
-		assertThrows(Exception.class, () -> FaceController.getAvgIntensity(hist, range));
+		assertThrows(Exception.class, () -> EyeColorController.getAvgIntensity(hist, range));
 	}
 	
 	//	 3a. If hist only has one element, and the range is {0, 0}, then the return value should be 0 (i.e. the index of the one element of the hist)
@@ -270,7 +272,7 @@ class FaceControllerTest {
 	void testSingleElementHistAndRangeZeroToZero() throws Exception {
 		List<Double> hist = Arrays.asList(3.0);
 		int[] range = {0, 0};
-		int avgIntensity = (int) FaceController.getAvgIntensity(hist, range);
+		int avgIntensity = (int) EyeColorController.getAvgIntensity(hist, range);
 		assertEquals(0, avgIntensity);
 	}
 	
@@ -280,7 +282,7 @@ class FaceControllerTest {
 		List<Double> hist = Arrays.asList(3.0, 14.0, 6.0);
 		int[] range = {0, 2};
 		// Average intensity calculation: (2*1 + 3*2 + 4*3 + 5*4) / (1 + 2 + 3 + 4)
-		double avgIntensity = FaceController.getAvgIntensity(hist, range);
+		double avgIntensity = EyeColorController.getAvgIntensity(hist, range);
 		assertEquals(1.0, avgIntensity, 0.001); // Using a delta for double comparison
 	}
 	
