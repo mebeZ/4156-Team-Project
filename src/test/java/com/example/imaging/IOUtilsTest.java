@@ -58,7 +58,7 @@ public class IOUtilsTest {
 	}
 
 	@Test
-	void loadValidImageFile() {
+	void loadValidImageFile() throws FileNotFoundException {
 		Mat result = IOUtils.loadFileAsMat("samantha");
 		Mat expected = Imgcodecs.imread( "src/main/resources/static/face-images/samantha-green.jpeg");
 		Assertions.assertEquals(expected.rows(), result.rows());
@@ -140,7 +140,7 @@ public class IOUtilsTest {
 	 */
 
 	@Test
-	void multipleValidImageFile() {
+	void multipleValidImageFile() throws FileNotFoundException {
 		File mockImage = new File("src/main/resources/static/images/mock-images/");
 		mockImage.mkdirs();
 
