@@ -9,12 +9,18 @@ The group project for COMS 4156: Advanced Software Engineering
 - `git clone` the project.
 - `Open` the project with IntelliJ IDE. The IDE should be able to detect the Maven configuration
 file (`pom.xml`) and prompt to configure Maven.
-- Our project is build with Spring Boot, run the restService in IDLE, which will start running the server at http://localhost:8080
+- Alternatively, Go to repository project directory in the terminal, and run the following command:
+- For macOS/Linux:
+`./mvnw spring-boot:run`
+
+- Windows:
+`.mvnw.cmd spring-boot:run`
+- Our project is build with Spring Boot, Go to [RestService.java](src/main/java/com/example/imaging/RestService.java), run class RestService, which will start running the server at http://localhost:8080
 
 ## Unit Testing
 - Unit tests are in `/src/test/java/com/example
 /imaging/`
-- Run test classes under the directory.
+- Run test classes under the directory. `mvn test`
 
 ## API Testing
 - Our API entry points are tested using Postman.
