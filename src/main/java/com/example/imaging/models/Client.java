@@ -5,11 +5,15 @@ import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Client {
     @Id
     private String accessToken;
+    //@OneToMany
+    //@JoinColumn(name = "client_imagePath")
     //private List<Image> imageList;
 
     protected Client() {}

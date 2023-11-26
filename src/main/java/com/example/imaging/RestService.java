@@ -1,11 +1,9 @@
 package com.example.imaging;
 
-import org.apache.tomcat.util.http.fileupload.UploadContext;
 import org.springframework.boot.SpringApplication;
 //import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import com.example.imaging.controllers.UploadController;
+//import com.example.imaging.controllers.UploadController;
 
 import nu.pattern.OpenCV;
 

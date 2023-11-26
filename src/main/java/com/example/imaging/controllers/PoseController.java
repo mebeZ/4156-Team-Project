@@ -11,16 +11,13 @@ import org.opencv.calib3d.Calib3d;
 
 import com.emaraic.jdlib.Jdlib;
 import com.emaraic.utils.FaceDescriptor;
+import com.example.imaging.DBUtils;
 import com.example.imaging.IOUtils;
 import com.example.imaging.models.PoseInfo;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 @RestController
@@ -184,7 +181,10 @@ public class PoseController {
     }
 
     @GetMapping("/pose-angle")
-    public static PoseInfo getPoseAngle(@RequestParam(value="name") String name) {
+    public static PoseInfo getPoseAngle(@RequestParam(value="name") String name, @RequestParam(value="accessToken") String token) {
+        // TODO: Make sure user has permission to access the API
+		// DBUtils.checkAccessToken(token);
+
         double yawAngle = 0.0;
         try {
             yawAngle = getYawAngle(name);

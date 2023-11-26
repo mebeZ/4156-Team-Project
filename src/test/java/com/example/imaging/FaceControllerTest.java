@@ -169,17 +169,17 @@ class FaceControllerTest {
 
 	@Test
 	void getEyeColorForNull() {
-		assertThrows(NullPointerException.class, () -> EyeColorController.getEyeColor(null));
+		assertThrows(NullPointerException.class, () -> EyeColorController.getEyeColor(null, "test"));
 	}
 
 	@Test
 	void getEyeColorForInvalid() {
-		assertThrows(IllegalArgumentException.class, () -> EyeColorController.getEyeColor(""));
+		assertThrows(IllegalArgumentException.class, () -> EyeColorController.getEyeColor("", "test"));
 	}
 
 	@Test
 	void getEyeColorForValid() throws Exception {
-		EyeColorInfo info = EyeColorController.getEyeColor("samantha");
+		EyeColorInfo info = EyeColorController.getEyeColor("samantha", "test");
 		assertEquals("samantha", info.name());
 		assertEquals("green", info.eyeColor());
 	}
