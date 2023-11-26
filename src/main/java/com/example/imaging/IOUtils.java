@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
@@ -12,42 +13,49 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 public class IOUtils {
     /**
-	 * Locates a person's image file and load it into memory. If there are multiple valid image files containing a person's name, only the first one is loaded.
-	 * 
-	 * @param name is a person's name - must be a valid substring in at least one image file in resources/static/images
-	 * @exception FileNotFoundException if name does not appear in at least one image file 
-	 * @returns: On success, a matrix representing the loaded image file; on failure, a FileNotFoundException
-	 */
+     * Locates a person's image file and load it into memory. If there are multiple valid image files containing a person's name, only the first one is loaded.
+     *
+     * @param name is a person's name - must be a valid substring in at least one image file in resources/static
+     * @exception FileNotFoundException if name does not appear in at least one image file
+     * @returns: On success, a matrix representing the loaded image file; on failure, a FileNotFoundException
+     */
     // loadImageFile
-	public static String getPathToFile(String name) throws FileNotFoundException {
-		File imagesFolder = new File("src/main/resources/static/plain-images");
-		File[] imageFiles = imagesFolder.listFiles();
-		for (int i = 0; i < imageFiles.length; i++) {
-			if (imageFiles[i].isFile()) {
-				String filename = imageFiles[i].getName();
-				System.out.println(filename);
-				if (name == null || name.equals("")){
-					throw new FileNotFoundException("No image file containing name = " + name);
-				}
-				System.out.println(filename.indexOf(name));
-				if (filename.indexOf(name) >= 0) {
-					String filepath = imageFiles[i].getAbsolutePath();
-                    return filepath;
-                }
-			}
-		}
-		throw new FileNotFoundException("No image file containing name = " + name);
-	}
-
-    public static String getImageName(String name) {
-        String fp = null;
-        try {
-            fp = getPathToFile(name);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.exit(0);
+    public static String getPathToFile(String name) throws FileNotFoundException {
+        // TODO: If name is null, change the exception that is thrown and change the unit tests
+        if (name == null || name.equals("")){
+            throw new FileNotFoundException("No image file containing name = " + name);
         }
-        return fp.substring(fp.lastIndexOf("/") + 1);
+        
+        File imagesFolder = new File("src/main/resources/static");
+        // TODO: Refactor getPathToFile so that it searches recursively starting from a sub-directory
+        for (File folder : imagesFolder.listFiles()) {
+            for (File file : folder.listFiles()) {
+                if (file.isFile()) {
+                    String filename = file.getName();
+                    System.out.println(filename);
+                    
+                    System.out.println(filename.indexOf(name));
+                    if (filename.indexOf(name) >= 0) {
+                        String filepath = file.getAbsolutePath();
+                        return filepath;
+                    }
+                }
+            }
+        }
+        throw new FileNotFoundException("No image file containing name = " + name);
+    }
+
+    /**
+     * Given a substring of the name of an image, get the full image name
+     * @param name: The substring of the name which we use to lookup the image (i.e. samantha)
+     * @return: The full image name (i.e. samantha-green.jpg)
+     */
+    public static String getImageName(String name) throws FileNotFoundException {
+        String fp = getPathToFile(name);
+
+        //return fp.substring(fp.lastIndexOf("\\") + 1);
+        // Use Paths.get(fp).getFileName() to extract only the filename without the path
+        return Paths.get(fp).getFileName().toString();
     }
 
     public static Mat loadFileAsMat(String name) {
