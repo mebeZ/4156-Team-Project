@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import org.opencv.core.*;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import com.example.imaging.controllers.PoseController;
+
 import nu.pattern.OpenCV;
 
 @SpringBootTest

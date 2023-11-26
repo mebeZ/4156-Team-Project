@@ -47,44 +47,81 @@ public class IOUtils {
 
     /**
      * Given a substring of the name of an image, get the full image name
-     * @param name: The substring of the name which we use to lookup the image (i.e. samantha)
+     * @param name: Either the filepath to an image /path/to/samantha-green.jpg or a substring of an image name (i.e. samantha) which we use to lookup the image
      * @return: The full image name (i.e. samantha-green.jpg)
      */
     public static String getImageName(String name) throws FileNotFoundException {
-        String fp = getPathToFile(name);
+        String fp = null;
+        if (name.contains("/")) {
+            fp = name;
+        } else {
+            fp = getPathToFile(name);
+        }
 
         //return fp.substring(fp.lastIndexOf("\\") + 1);
         // Use Paths.get(fp).getFileName() to extract only the filename without the path
         return Paths.get(fp).getFileName().toString();
     }
 
-    public static Mat loadFileAsMat(String name) {
+    /*
+     * Given a filename or a path to a file, see if it is a valid image file and if so, load it as a Mat object
+     * @name: A substring of a valid image file name or the path (relative or absolute) to a valid image file
+     * @returns: The image as a Mat object
+     * @throws: FileNotFoundException when the filepath is invalid
+     */
+    public static Mat loadFileAsMat(String name) throws FileNotFoundException {
         String filepath = null;
         try {
-            filepath = getPathToFile(name);
+            if (name.contains("/")) {
+                filepath = name;
+            } else {
+                filepath = getPathToFile(name);
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.exit(0);
         }
         System.out.println("Filepath = " + filepath);
         Mat imgMatrix = Imgcodecs.imread(filepath);
+        if (imgMatrix == null) {
+            throw new FileNotFoundException(filepath + " is not a valid file path");
+        }
         System.out.println("Size of the original loaded image: " + imgMatrix.size());
         //System.out.println("Number of rows: " + imgMatrix.rows() + " Number of cols: " + imgMatrix.cols());
         //Imgproc.resize(imgMatrix, imgMatrix, new Size(1000, 1000));
         return imgMatrix;
     }
 
+    /*
+     * Given a filename or a path to a file, see if it is a valid image file and if so, load it as a BufferedImage object
+     * @name: A substring of a valid image file name or the path (relative or absolute) to a valid image file
+     * @returns: The image as a BufferedImage object
+     */
     public static BufferedImage loadFileAsBufferedImage(String name) {
         String filepath = null;
         BufferedImage bufferedImage = null;
         try {
-            filepath = getPathToFile(name);
-            File file = new File(filepath);
+            File file = null;
+            if (name.contains("/")) {
+                file = new File(name);
+            } else {
+                filepath = getPathToFile(name);
+                file = new File(filepath);
+            }
             bufferedImage = ImageIO.read(file);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(0);
         }
         return bufferedImage;
+    }
+
+    /*
+     * Locates the image located at localpath and moves it to static/face-images
+     */
+    public static void uploadLocalImage(String localPath) throws Exception {
+        Mat img = Imgcodecs.imread(localPath);
+        String name = getImageName(localPath);
+        Imgcodecs.imwrite("src/main/resources/static/face-images/" + name, img);
     }
 }

@@ -1,23 +1,23 @@
-package com.example.imaging;
+package com.example.imaging.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.sh0nk.matplotlib4j.NumpyUtils;
+import com.example.imaging.DBUtils;
+import com.example.imaging.IOUtils;
+import com.example.imaging.models.EyeColorInfo;
+//import com.github.sh0nk.matplotlib4j.NumpyUtils;
 //import com.github.sh0nk.matplotlib4j.Plot;
 //import com.github.sh0nk.matplotlib4j.PythonExecutionException;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-//import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
-import org.opencv.core.Core;
 // OpenCV imports
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfFloat;
 import org.opencv.core.MatOfInt;
@@ -26,13 +26,13 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 //import org.opencv.core.Size;
-import org.opencv.highgui.HighGui;
-import org.opencv.imgcodecs.Imgcodecs;
+//import org.opencv.highgui.HighGui;
+//import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
 @RestController
-public class FaceController {
+public class EyeColorController {
 	// Used to name RGB histogram files sequentially
 	//private static int imgNum = 1;
 
@@ -309,7 +309,6 @@ public class FaceController {
 		//System.out.println("Number of bins: " + blue_hist.rows());
 
 		// Plot the blue color histogram
-		List<Double> intensities = NumpyUtils.linspace(0, intensity_max, intensity_max-1);
 		List<Double> blue_counts = new ArrayList<Double>();
 		List<Double> green_counts = new ArrayList<Double>();
 		List<Double> red_counts = new ArrayList<Double>();
@@ -322,6 +321,7 @@ public class FaceController {
 		}
 
 		/*
+		List<Double> intensities = NumpyUtils.linspace(0, intensity_max, intensity_max-1);
 		Plot plt = Plot.create();
 		plt.plot().add(intensities, blue_counts, "b");
 		plt.plot().add(intensities, green_counts, "g");
@@ -384,13 +384,15 @@ public class FaceController {
 		return numerator / denominator;
 	}
 
-
-
 	// A GET request to /eye-color binds to the calling of method 'getEyeColor'
 	// @RequestParam binds the value of the query parameter name to the value of parameter name in the method
 	// localhost:8080/eye-color?name=carl
 	@GetMapping("/eye-color")
-	public static FaceInfo getEyeColor(@RequestParam(value="name") String name) throws Exception {
+	public static EyeColorInfo getEyeColor(@RequestParam(value="name") String name, @RequestParam(value="accessToken") String token) throws Exception {
+		// TODO: Make sure user has permission to access the API
+		DBUtils dbUtils = new DBUtils();
+		dbUtils.checkAccessToken(token);
+		
 		if (name == null) {
 			throw new NullPointerException("name cannot be null");
 		} 
@@ -422,6 +424,6 @@ public class FaceController {
 		// String eyeColor = "green";
 		// detectEye("src/main/resources/static/images/img1.jpeg");
 		// Use Haar Cascades to detect the eye color from an image
-		return new FaceInfo(name, eyeColor);
+		return new EyeColorInfo(name, eyeColor);
 	}
 }
