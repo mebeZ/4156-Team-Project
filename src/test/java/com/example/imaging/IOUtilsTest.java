@@ -42,28 +42,21 @@ public class IOUtilsTest {
 		OpenCV.loadLocally();
 	}
 
-<<<<<<< HEAD
 	/*Start of unit tests for method loadFileAsMat
 	*
 	* Test invalid file input
 	* */
     @Test
-=======
-	@Test
->>>>>>> b6950a518265046380846f0b5029348a061dbeae
 	void loadInvalidImageFile() {
 		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile("foo.txt")); // foo.txt is an invalid file
 	}
 
-<<<<<<< HEAD
+
 	/*Start of unit tests for method loadFileAsMat
 	 *
 	 * Test empty input
 	 * */
-	@Test 
-=======
 	@Test
->>>>>>> b6950a518265046380846f0b5029348a061dbeae
 	void loadImageFromEmptyString() {
 		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile(""));
 	}
@@ -89,12 +82,10 @@ public class IOUtilsTest {
 		Assertions.assertEquals(expected.cols(), result.cols());
 	}
 
-<<<<<<< HEAD
 	/*Start of unit tests for method loadFileAsMat
 	 *
 	 * Test multiple valid inputs but one read the first one
 	 * */
-=======
 	// c. In a mock image folder there are only folders (no images), and none of the folders have names which match the parameter name.
 	@Test
 	void loadImageFromFolderWithOnlySubfoldersNoMatch() {
@@ -169,7 +160,6 @@ public class IOUtilsTest {
 	 * Start of unit tests for the loadFileAsMat() method in the IOUtils class.
 	 */
 
->>>>>>> b6950a518265046380846f0b5029348a061dbeae
 	@Test
 	void multipleValidImageFile() {
 		File mockImage = new File("src/main/resources/static/images/mock-images/");
