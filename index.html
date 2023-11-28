@@ -72,7 +72,31 @@
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            canvas.style.display = 'block';
+
+
+            canvas.toBlob(function(blob) {
+                const formData = new FormData();
+                formData.append('image', blob, 'capture.png');
+
+                fetch('/upload-image', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if(response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Network response was not ok.');
+                    })
+                    .then(data => {
+                        console.log('Success:', data);
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+
+                canvas.style.display = 'block';
+            }, 'image/png');
         });
     </script>
 </body>
