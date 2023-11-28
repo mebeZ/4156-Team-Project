@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Photo</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .camera-container {
+            text-align: center;
+        }
+
+        #camera-stream {
+            width: 400px;
+            height: 300px;
+            border: 3px solid #333;
+        }
+
+        #capture-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #capture-btn:hover {
+            background-color: #0056b3;
+        }
+
+        #photo-preview {
+            width: 400px;
+            height: 300px;
+            border: 3px solid #333;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="camera-container">
+        <video id="camera-stream" autoplay></video>
+        <button id="capture-btn">Capture Photo</button>
+        <div id="photo-preview"></div>
+    </div>
+    <script>
+		const video = document.getElementById('camera-stream');
+        const canvas = document.getElementById('photo-preview');
+        const captureButton = document.getElementById('capture-btn');
+        const context = canvas.getContext('2d');
+
+        
+        if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    video.srcObject = stream;
+                })
+                .catch(function (error) {
+                    console.log("Something went wrong accessing the camera!");
+                });
+        }
+
+        captureButton.addEventListener('click', function() {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            canvas.style.display = 'block'; 
+        });
+    </script>
+</body>
+</html>
