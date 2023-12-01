@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
 
 // Inspiration from: https://spring.io/guides/gs/accessing-data-jpa/
 @Entity
@@ -32,7 +33,7 @@ public class Image {
     private String type;
 
     @Lob
-    @Column(name = "imageData", length = 1000)
+    @Column(name = "imageData", length = 100000)
     private byte[] imageData;
 
     /*
