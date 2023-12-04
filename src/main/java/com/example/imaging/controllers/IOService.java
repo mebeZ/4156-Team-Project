@@ -1,4 +1,4 @@
-package com.example.imaging;
+package com.example.imaging.controllers;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -10,8 +10,10 @@ import javax.imageio.ImageIO;
 
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.springframework.stereotype.Service;
 
-public class IOUtils {
+@Service
+public class IOService {
     /**
      * Locates a person's image file and load it into memory. If there are multiple valid image files containing a person's name, only the first one is loaded.
      *

@@ -11,8 +11,6 @@ import org.opencv.calib3d.Calib3d;
 
 import com.emaraic.jdlib.Jdlib;
 import com.emaraic.utils.FaceDescriptor;
-import com.example.imaging.DBUtils;
-import com.example.imaging.IOUtils;
 import com.example.imaging.models.PoseInfo;
 
 import java.awt.*;
@@ -30,7 +28,7 @@ public class PoseController {
     public static double getYawAngle(String name) throws Exception {
         Jdlib jdlib = new Jdlib("shape_predictor_68_face_landmarks.dat");
         
-        BufferedImage bufferedImage = IOUtils.loadFileAsBufferedImage(name);
+        BufferedImage bufferedImage = IOService.loadFileAsBufferedImage(name);
         
         // BufferedImage bufferedImage = ImageIO.read(new File("headPose.jpg"));
         ArrayList<Rectangle> faces = jdlib.detectFace(bufferedImage);
@@ -149,7 +147,7 @@ public class PoseController {
         org.opencv.core.Point p2 = noseEndPoint2D.toArray()[0];
         Imgproc.line(image, p1, p2, new Scalar(255, 0, 0), 2);
 
-        String imageName = IOUtils.getImageName(name);
+        String imageName = IOService.getImageName(name);
         String writePath = "src/main/resources/static/labeled-images/" + imageName; 
         Imgcodecs.imwrite(writePath, image);
 

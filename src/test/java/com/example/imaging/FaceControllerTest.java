@@ -22,8 +22,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import nu.pattern.OpenCV;
-import com.example.imaging.IOUtils;
+
 import com.example.imaging.controllers.EyeColorController;
+import com.example.imaging.controllers.IOService;
 import com.example.imaging.models.EyeColorInfo;
 
 @SpringBootTest
@@ -43,8 +44,8 @@ class FaceControllerTest {
 		// Carl's eye image does not work for iris detection: gets 0 irises
 		String names[] = {"emma", "john", "mica"};
 		for (String name : names) {
-			Mat faceImg = IOUtils.loadFileAsMat(name);
-			String imgName = IOUtils.getImageName(name);
+			Mat faceImg = IOService.loadFileAsMat(name);
+			String imgName = IOService.getImageName(name);
 			System.out.println("Image name: " + imgName);
 			Mat eyeImg = EyeColorController.detectEye(faceImg);
 			Imgcodecs.imwrite("src/main/resources/static/eye-images/" + imgName, eyeImg);
