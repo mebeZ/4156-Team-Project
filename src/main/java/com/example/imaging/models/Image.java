@@ -19,6 +19,8 @@ public class Image {
     private Long id;
     private String imagePath;
 
+    public Image() {}
+    
     public Image(String imagePath) {
         this.imagePath = imagePath;
     }
