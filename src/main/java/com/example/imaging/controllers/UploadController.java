@@ -1,15 +1,14 @@
 package com.example.imaging.controllers;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import org.opencv.core.Mat;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,11 +40,11 @@ public class UploadController {
     }
 
     @PostMapping("/upload-image")
-    public String newUploadImage(@RequestParam("file") MultipartFile file, @RequestParam("token") String token) throws Exception {
+    public ResponseEntity<String> newUploadImage(@RequestParam("file") MultipartFile file, @RequestParam("token") String token) throws Exception {
         // Find the client with the specified token
         Optional<Client> tclient = clientDao.findById(token);
         if (!tclient.isPresent()) {
-            throw new Exception("No client found with accessToken=" + token);
+            return new ResponseEntity<>("No client found with accessToken=" + token, HttpStatus.UNAUTHORIZED);
         }
         Client client = tclient.get();
 
@@ -64,6 +63,6 @@ public class UploadController {
         client.setImageName(filepath);
         clientDao.save(client);
 
-        return "redirect:/index";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
