@@ -40,23 +40,8 @@ public class UploadController {
         return "index";
     }
 
-    @PostMapping("/new-upload")
-    public String newUploadImage(@RequestParam("file") MultipartFile file) throws IllegalStateException, IOException {
-        //System.out.println("File name: " + file.getOriginalFilename());
-        Path uploadPath = Paths.get(System.getProperty("user.dir"), uploadDir);
-        Path relativePath = uploadPath.resolve(file.getOriginalFilename());
-        file.transferTo(relativePath.toFile());
-        return "redirect:/index";
-    }
-
-    /*
-     * Saves the uploaded image to the Images db
-     * Modifies the Clients db as follows:
-     *  - Find the client object with matching accessToken
-     *  - Update that client object's imageName to the name of the uploaded image  
-     */
     @PostMapping("/upload-image")
-    public Image uploadImage(@RequestParam(value="localPath") String path, @RequestParam(value="accessToken") String token) throws Exception {
+    public String newUploadImage(@RequestParam("file") MultipartFile file, @RequestParam("token") String token) throws Exception {
         // Find the client with the specified token
         Optional<Client> tclient = clientDao.findById(token);
         if (!tclient.isPresent()) {
@@ -64,18 +49,21 @@ public class UploadController {
         }
         Client client = tclient.get();
 
-        // Move the image file to the face-images/ folder if found
-        Mat img = IOService.loadFileAsMat(path);
-        String imgName = IOService.getImageName(path);
-        String filepath = "src/main/resources/static/face-images/" + imgName;
-        Imgcodecs.imwrite(filepath, img);
+        // Move the uploaded file to the images folder
+        String imgName = file.getOriginalFilename();
+        Path uploadPath = Paths.get(System.getProperty("user.dir"), uploadDir);
+        File imageFile = uploadPath.resolve(imgName).toFile();
+        file.transferTo(imageFile);
         
         // Create an Image object representing the image and save it to the Images db
-        Image faceImage = imageDao.save(new Image(filepath));
+        //String filepath = imageFile.toString();
+        String filepath = Paths.get(uploadDir, imgName).toString();
+        imageDao.save(new Image(filepath));
         
         // Update the Clients DB with the name of the image that the client uploaded
-        client.setImageName(imgName);
+        client.setImageName(filepath);
         clientDao.save(client);
-        return faceImage;
-    }   
+
+        return "redirect:/index";
+    }
 }
