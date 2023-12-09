@@ -9,22 +9,22 @@ import jakarta.persistence.Table;
 public class Client {
     @Id
     private String accessToken;
-    private String imageName;
+    private String imagePath;
 
     protected Client() {}
 
     public Client(String accessToken) {
         this.accessToken = accessToken;
-        this.imageName = "";
+        this.imagePath = "";
     }
 
     // Getter and setter methods
     public String getImageName() {
-        return imageName;
+        return imagePath;
     }
 
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     // Getter methods
@@ -35,6 +35,6 @@ public class Client {
     // String representation of Client object
     @Override
     public String toString() {
-        return String.format("Client[accessToken='%s', imagePath='%s']", accessToken, imageName);
+        return String.format("Client[accessToken='%s', imagePath='%s']", accessToken, imagePath);
     }
 }
