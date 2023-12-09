@@ -62,7 +62,7 @@ public class IOUtilsTest {
 	@Test
 	void loadValidImageFile() throws FileNotFoundException {
 		Mat result = IOService.loadFileAsMat("samantha");
-		Mat expected = Imgcodecs.imread( "src/main/resources/static/face-images/samantha-green.jpeg");
+		Mat expected = Imgcodecs.imread( "src/main/resources/static/images/face-images/samantha-green.jpeg");
 		Assertions.assertEquals(expected.rows(), result.rows());
 		Assertions.assertEquals(expected.cols(), result.cols());
 	}
@@ -71,8 +71,8 @@ public class IOUtilsTest {
 	@Test
 	void loadImageFromFolderWithOnlySubfoldersNoMatch() {
 		// Create subfolders without matching names
-		File subfolder1 = new File("src/main/resources/static/face-images/subfolder1");
-		File subfolder2 = new File("src/main/resources/static/face-images/subfolder2");
+		File subfolder1 = new File("src/main/resources/static/images/face-images/subfolder1");
+		File subfolder2 = new File("src/main/resources/static/images/face-images/subfolder2");
 		subfolder1.mkdirs();
 		subfolder2.mkdirs();
 
@@ -89,16 +89,16 @@ public class IOUtilsTest {
 	// d. In a mock image folder there is one or more folders
 	@Test
 	void loadImageFromFolderWithSubfoldersAndImagesFirstMatchingSubfolder() {
-		File subfolder1 = new File("src/main/resources/static/face-images/subfolder1");
-		File subfolder2 = new File("src/main/resources/static/face-images/subfolder2");
+		File subfolder1 = new File("src/main/resources/static/images/face-images/subfolder1");
+		File subfolder2 = new File("src/main/resources/static/images/face-images/subfolder2");
 		subfolder1.mkdirs();
 		subfolder2.mkdirs();
 
 		// Create an image file in both subfolders
-		Path sourcePath1 = Paths.get("src/main/resources/static/face-images/samantha-green.jpeg");
-		Path destinationPath1 = Paths.get("src/main/resources/static/face-images/subfolder1/samantha-green.jpeg");
-		Path sourcePath2 = Paths.get("src/main/resources/static/face-images/carl-blue.jpeg");
-		Path destinationPath2 = Paths.get("src/main/resources/static/face-images/subfolder2/carl-blue.jpeg");
+		Path sourcePath1 = Paths.get("src/main/resources/static/images/face-images/samantha-green.jpeg");
+		Path destinationPath1 = Paths.get("src/main/resources/static/images/face-images/subfolder1/samantha-green.jpeg");
+		Path sourcePath2 = Paths.get("src/main/resources/static/images/face-images/carl-blue.jpeg");
+		Path destinationPath2 = Paths.get("src/main/resources/static/images/face-images/subfolder2/carl-blue.jpeg");
 
 		try {
 			Files.copy(sourcePath1, destinationPath1, StandardCopyOption.REPLACE_EXISTING);
@@ -147,7 +147,7 @@ public class IOUtilsTest {
 		mockImage.mkdirs();
 
 		//copy samantha-green.jpeg to mock-images folder
-		Path sourcePath = Paths.get("src/main/resources/static/face-images/samantha-green.jpeg");
+		Path sourcePath = Paths.get("src/main/resources/static/images/face-images/samantha-green.jpeg");
 		Path destinationPath = Paths.get("src/main/resources/static/images/mock-images/samantha-green.jpeg");
 		try {
 			Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
@@ -157,7 +157,7 @@ public class IOUtilsTest {
 		}
 
 		//copy carl-blue.jpeg to mock-images folder and rename as samantha-blue.jpeg
-		sourcePath = Paths.get("src/main/resources/static/face-images/carl-blue.jpeg");
+		sourcePath = Paths.get("src/main/resources/static/images/face-images/carl-blue.jpeg");
 		destinationPath = Paths.get("src/main/resources/static/images/mock-images/samantha-blue.jpeg");
 		try {
 			Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
@@ -211,7 +211,7 @@ public class IOUtilsTest {
 	}
 	@Test
 	void loadValidBufferedImageFile() {
-		File file = new File("src/main/resources/static/face-images/samantha-green.jpeg");
+		File file = new File("src/main/resources/static/images/face-images/samantha-green.jpeg");
 		BufferedImage ExpectedBufferedImage = null;
 		BufferedImage result = IOService.loadFileAsBufferedImage("samantha");
 		try {
@@ -292,7 +292,7 @@ public class IOUtilsTest {
 	@Test
 	void testValidNameReturnsFile() throws FileNotFoundException {
 		String imageName = IOService.getImageName("samantha");
-		String imagePath = "src/main/resources/static/face-images/" + imageName;
+		String imagePath = "src/main/resources/static/images/face-images/" + imageName;
 		File imageFile = new File(imagePath);
 		Assertions.assertTrue(imageFile.exists());
 	} // end of unit tests for the getImageName()
@@ -305,7 +305,7 @@ public class IOUtilsTest {
 //		mockImageFolder.mkdirs();
 //
 //		// Copy valid image files to the mock folder
-//		Path sourcePath1 = Paths.get("src/main/resources/static/face-images/samantha-green.jpeg");
+//		Path sourcePath1 = Paths.get("src/main/resources/static/images/face-images/samantha-green.jpeg");
 //		Path destinationPath1 = Paths.get("src/main/resources/static/images/mock-images/samantha-green.jpeg");
 //		try {
 //			Files.copy(sourcePath1, destinationPath1, StandardCopyOption.REPLACE_EXISTING);
@@ -313,7 +313,7 @@ public class IOUtilsTest {
 //			e.printStackTrace();
 //		}
 //
-//		Path sourcePath2 = Paths.get("src/main/resources/static/face-images/carl-blue.jpeg");
+//		Path sourcePath2 = Paths.get("src/main/resources/static/images/face-images/carl-blue.jpeg");
 //		Path destinationPath2 = Paths.get("src/main/resources/static/images/mock-images/samantha-blue.jpeg");
 //		try {
 //			Files.copy(sourcePath2, destinationPath2, StandardCopyOption.REPLACE_EXISTING);

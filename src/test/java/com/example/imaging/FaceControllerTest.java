@@ -48,7 +48,7 @@ class FaceControllerTest {
 			String imgName = IOService.getImageName(name);
 			System.out.println("Image name: " + imgName);
 			Mat eyeImg = EyeColorController.detectEye(faceImg);
-			Imgcodecs.imwrite("src/main/resources/static/eye-images/" + imgName, eyeImg);
+			Imgcodecs.imwrite("src/main/resources/static/images/eye-images/" + imgName, eyeImg);
 		}
 	}
 
@@ -69,7 +69,7 @@ class FaceControllerTest {
 	@Test
 	void testNonFaceImage() {
 		// Load an image without a face
-		String filepath = "src/main/resources/static/invalid-images/non_face.jpeg";
+		String filepath = "src/main/resources/static/images/invalid-images/non_face.jpeg";
 		Mat testImg = Imgcodecs.imread(filepath);
 		// Ensure that detectEye detects no face
 		Exception e = assertThrows(IOException.class, () -> FaceController.detectEye(testImg));
@@ -79,7 +79,7 @@ class FaceControllerTest {
 	@Test
 	void testMultipleFaceImage() {
 		// Load an image with multiple faces
-		String filepath = "src/main/resources/static/invalid-images/two_faces.jpg";
+		String filepath = "src/main/resources/static/images/invalid-images/two_faces.jpg";
 		Mat testImg = Imgcodecs.imread(filepath);
 		// Ensure that detectEye detects two faces
 		Exception e = assertThrows(IOException.class, () -> FaceController.detectEye(testImg));
@@ -88,7 +88,7 @@ class FaceControllerTest {
 
 	@Test
 	void testSidewaysFaceImage() {
-		String filepath = "src/main/resources/static/invalid-images/sideways_face.webp";
+		String filepath = "src/main/resources/static/images/invalid-images/sideways_face.webp";
 		Mat testImg = Imgcodecs.imread(filepath);
 		// Ensure that detectEye cannot detect both eyes and thus recognizes the face image is not oriented properly
 		Exception e = assertThrows(IOException.class, () -> FaceController.detectEye(testImg));
@@ -112,7 +112,7 @@ class FaceControllerTest {
 
 	@Test
 	void testImageWithoutIris() {
-		String filepath = "src/main/resources/static/invalid-images/square.jpeg";
+		String filepath = "src/main/resources/static/images/invalid-images/square.jpeg";
 		Mat testImg = Imgcodecs.imread(filepath);
 		Exception e = assertThrows(Exception.class, () -> EyeColorController.detectIris(testImg));
 		assertEquals("detectIris failed: 0 circles were detected", e.getMessage());
@@ -120,7 +120,7 @@ class FaceControllerTest {
 
 	@Test
 	void testImageWithMultipleIrises() {
-		String filepath = "src/main/resources/static/face-images/carl-blue.jpeg";
+		String filepath = "src/main/resources/static/images/face-images/carl-blue.jpeg";
 		Mat testImg = Imgcodecs.imread(filepath);
 		Exception e = assertThrows(Exception.class, () -> EyeColorController.detectIris(testImg));
 		assertEquals("detectIris failed: More than 1 circle was detected", e.getMessage());
@@ -128,7 +128,7 @@ class FaceControllerTest {
 
 	@Test
 	void testValidEyeImage() throws Exception {
-		String filepath = "src/main/resources/static/eye-images/mica-green.jpeg";
+		String filepath = "src/main/resources/static/images/eye-images/mica-green.jpeg";
 		Mat testImg = Imgcodecs.imread(filepath);
 		double iris[] = EyeColorController.detectIris(testImg);
 		assertTrue("Detected iris center is not within the bounds of the image", iris[0] < testImg.height() && iris[1] < testImg.width());
@@ -149,14 +149,14 @@ class FaceControllerTest {
 
 	@Test
 	void predictBlueEyeColor() {
-		String filepath = "src/main/resources/static/eye-images/john-blue.jpeg";
+		String filepath = "src/main/resources/static/images/eye-images/john-blue.jpeg";
 		Mat testImg = Imgcodecs.imread(filepath);
 		assertEquals("blue", EyeColorController.predictEyeColor(testImg));
 	}
 
 	@Test
 	void predictGreenEyeColor() {
-		String filepath = "src/main/resources/static/eye-images/mica-green.jpeg";
+		String filepath = "src/main/resources/static/images/eye-images/mica-green.jpeg";
 		Mat testImg = Imgcodecs.imread(filepath);
 		assertEquals("green", EyeColorController.predictEyeColor(testImg));
 	}

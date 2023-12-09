@@ -68,13 +68,13 @@ public class UploadController {
         // Transfer the file to the specified path
         file.transferTo(filePath.toFile());
 
-        // Return /face-images/{file_name} from absolute path
-        // https://stackoverflow.com/questions/14316487/java-getting-a-substring-from-a-string-starting-after-a-particular-character
-        String segments[] = filePath.toString().split("/");
-        if (segments.length < 2) {
-            throw new Exception("Upload directory must have at least two '/'; instead: upload.dir = " + uploadDir);
+        // Get the substring after 'static' as the image url (i.e /images/face-images/{file_name})
+        String pathString = filePath.toString();
+        int index = pathString.indexOf("static");
+        if (index < 0) {
+            throw new Exception("'static' not found in filePath: " + pathString);
         }
-        return "/" + segments[segments.length-2] + "/" + segments[segments.length-1];
+        return pathString.substring(index + "static".length());
     }
 
     @PostMapping("/upload")
@@ -112,5 +112,10 @@ public class UploadController {
     public String displayImage(@RequestParam(name="imageUrl") String imageUrl, Model model) {
         model.addAttribute("imageUrl", imageUrl);
         return "display";
+    }
+
+    @GetMapping("/photo")
+    public String takePhoto() {
+        return "photo";
     }
 }

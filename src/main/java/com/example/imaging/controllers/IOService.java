@@ -124,6 +124,6 @@ public class IOService {
     public static void uploadLocalImage(String localPath) throws Exception {
         Mat img = Imgcodecs.imread(localPath);
         String name = getImageName(localPath);
-        Imgcodecs.imwrite("src/main/resources/static/face-images/" + name, img);
+        Imgcodecs.imwrite("src/main/resources/static/images/face-images/" + name, img);
     }
 }
