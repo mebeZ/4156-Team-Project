@@ -9,10 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+//import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.imaging.models.Client;
@@ -21,7 +22,7 @@ import com.example.imaging.models.data.ClientRepository;
 import com.example.imaging.models.data.ImageRepository;
 
 
-@RestController
+@Controller
 public class UploadController {
 
     @Autowired
@@ -30,7 +31,7 @@ public class UploadController {
     @Autowired
     private ClientRepository clientDao;
 
-    // Inject upload directory from application.properties
+    // Inject image upload directory location from application.properties
     @Value("${upload.dir}")
     private String uploadDir;
 
@@ -40,7 +41,7 @@ public class UploadController {
     }
 
     @PostMapping("/upload-image")
-    public ResponseEntity<String> newUploadImage(@RequestParam("file") MultipartFile file, @RequestParam("token") String token) throws Exception {
+    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("token") String token) throws Exception {
         // Find the client with the specified token
         Optional<Client> tclient = clientDao.findById(token);
         if (!tclient.isPresent()) {
@@ -52,6 +53,7 @@ public class UploadController {
         String imgName = file.getOriginalFilename();
         Path uploadPath = Paths.get(System.getProperty("user.dir"), uploadDir);
         File imageFile = uploadPath.resolve(imgName).toFile();
+        // Transfer the file from memory to a created destination file in the filesystem
         file.transferTo(imageFile);
         
         // Create an Image object representing the image and save it to the Images db

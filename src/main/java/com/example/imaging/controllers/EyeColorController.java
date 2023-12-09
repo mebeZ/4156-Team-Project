@@ -1,5 +1,6 @@
 package com.example.imaging.controllers;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,8 +35,8 @@ public class EyeColorController {
 	// Used to name RGB histogram files sequentially
 	//private static int imgNum = 1;
 
-	public static CascadeClassifier faceCascade = new CascadeClassifier("src/main/resources/templates/haarcascades/haarcascade_frontalface_default.xml");
-	public static CascadeClassifier eyesCascade = new CascadeClassifier("src/main/resources/templates/haarcascades/haarcascade_eye.xml");
+	public static CascadeClassifier faceCascade = new CascadeClassifier("src/main/resources/haarcascades/haarcascade_frontalface_default.xml");
+	public static CascadeClassifier eyesCascade = new CascadeClassifier("src/main/resources/haarcascades/haarcascade_eye.xml");
 
 	/**
 	 * Given an image matrix, detects the eye region.

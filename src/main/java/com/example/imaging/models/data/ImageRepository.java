@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.example.imaging.models.Image;
 
 @Repository
-public interface ImageRepository extends CrudRepository<Image, String> {
+public interface ImageRepository extends CrudRepository<Image, Long> {
 }
