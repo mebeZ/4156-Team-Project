@@ -3,18 +3,22 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Take Photo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Capture and Display</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <script type="text/javascript" th:src="@{/js/script.js}"></script>
 </head>
 <body>
-    <div class="camera">
-        <video id="video">Video stream not available</video>
-        <button id="startbutton">Take Photo</button>
+    <div class="camera-container">
+        <video id="camera-stream" autoplay></video>
+        <canvas id="photo-preview" style="display: none;"></canvas>
+        <button id="capture-btn">Capture Photo</button>
+        <button id="upload-btn" style="display: none;">Upload Photo</button>
+        <button id="fetch-image-btn">Fetch Image</button>
+        <div id="messages"></div>
+        <div id="image-container">
+            <img id="image-display" src="" alt="Captured image will appear here"/>
+        </div>
     </div>
-    <canvas id="canvas"></canvas>
-    <div class="output">
-        <img id="photo" alt="The displayed image will appear here"/>
-    </div>
+    <script type="text/javascript" th:src="@{/js/script.js}"></script>
 </body>
 </html>
