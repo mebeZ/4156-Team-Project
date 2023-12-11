@@ -8,10 +8,13 @@
     <script type="text/javascript" th:src="@{/js/script.js}"></script>
 </head>
 <body>
-    <div>
-        <video id="video"></video>
+    <div class="camera">
+        <video id="video">Video stream not available</video>
+        <button id="startbutton">Take Photo</button>
     </div>
-    <br/>
-    <button id="button">Take Photo</button>
+    <canvas id="canvas"></canvas>
+    <div class="output">
+        <img id="photo" alt="The displayed image will appear here"/>
+    </div>
 </body>
 </html>
