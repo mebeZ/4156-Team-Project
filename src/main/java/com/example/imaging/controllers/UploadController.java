@@ -45,7 +45,7 @@ public class UploadController {
     /*
      * Transfer the Multipartfile @file to the specified directory @uploadDir
      * Relies on vodoo filepath operations
-     * @returns: Root path to the image: /face-images/{file_name.jpeg}
+     * @returns: Root path to the image: /images/face-images/{file_name.jpeg}
      */
     private String transferFile(MultipartFile file, String uploadDir) throws Exception {
          // Get current working directory
@@ -78,7 +78,7 @@ public class UploadController {
     }
 
     @PostMapping("/upload")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("token") String token, RedirectAttributes redirectAttributes) throws Exception {
+    private ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("token") String token) throws Exception {
         // Find the client with the specified token
         Optional<Client> tclient = clientDao.findById(token);
         if (!tclient.isPresent()) {
@@ -88,7 +88,7 @@ public class UploadController {
 
         // Make sure that the uploaded file is not empty
         if (file.isEmpty()) {
-            return "redirect:/upload";
+            return new ResponseEntity<>("File cannot be empty", HttpStatus.BAD_REQUEST);
         }
 
         // Move the Multipartfile to inside the static resources 
@@ -103,9 +103,8 @@ public class UploadController {
         client.setImagePath(imgUrl);
         clientDao.save(client);
 
-        // Redirect to display template in order to show the uploaded image
-        redirectAttributes.addAttribute("imageUrl", imgUrl);
-        return "redirect:/display";
+        // Return an HTTP response indicating upload was successful
+        return new ResponseEntity<>("Upload successful", HttpStatus.OK);
     }
 
     @GetMapping("/display")
@@ -115,7 +114,8 @@ public class UploadController {
     }
 
     @GetMapping("/photo")
-    public String takePhoto() {
+    public String takePhoto(Model model, @RequestParam(name="accessToken") String token) {
+        model.addAttribute("accessToken", token);
         return "photo";
     }
 }

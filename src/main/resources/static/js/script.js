@@ -7,10 +7,9 @@ const fetchImageButton = document.getElementById('fetch-image-btn');
 const messages = document.getElementById('messages');
 const context = canvas.getContext('2d');
 
-console.log("Hello world");
+//console.log("Hello world");
 
-let capturedBlob = null; // To hold the blob after capturing the photo
-
+// Fill the camera-stream element with video from the Webcam if there is one
 if (navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia({ video: true })
         .then(function (stream) {
@@ -21,10 +20,15 @@ if (navigator.mediaDevices.getUserMedia) {
         });
 }
 
+let capturedBlob = null; // To hold the blob after capturing the photo
+
+// When the user clicks on 'Capture Photo', get the current frame from the WebCam video and draw it to the canvas
 captureButton.addEventListener('click', function() {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
+    // Gets current frame of the video and draws it onto the canvas
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // Converts the content of the canvas to a Blob (Binary Large Object) which represents the image in PNG format
     canvas.toBlob(function(blob) {
         capturedBlob = blob;
         imageDisplay.style.display = 'block';
@@ -36,23 +40,30 @@ captureButton.addEventListener('click', function() {
 uploadButton.addEventListener('click', function() {
     if (capturedBlob) {
         const formData = new FormData();
-        formData.append('image', capturedBlob, 'capture.png');
-        fetch('http://localhost:8080/upload-image', {
+        formData.append('file', capturedBlob, 'capture.png'); // 'file' corresponds to @RequestParam("file") in the /upload controller
+        formData.append('token', accessToken); // 'token' corresponds to @RequestParam("token") in the /upload controller
+        fetch('http://localhost:8080/upload', {
             method: 'POST',
             body: formData
         })
-            .then(response => {
-                if(response.ok) {
-                    return response.json();
-                }
-                throw new Error('Network response failed.');
-            })
-            .then(data => {
-                displayMessage('Image uploaded successfully!', false, data.imageId);
-            })
-            .catch((error) => {
-                displayMessage('Upload failed: ' + error.message, true);
-            });
+        .then(response => {
+            if(response.ok) {
+                return response.text();
+            }
+            throw new Error('Network response failed.');
+        })
+        .then(message => {
+            console.log("Response from /upload controller: ", message);
+        })
+        .catch(error => {
+            console.log("Error: ", error);
+        });
+        //.then(data => {
+        //    displayMessage('Image uploaded successfully!', false, data.imageId);
+        //})
+        //.catch((error) => {
+        //    displayMessage('Upload failed: ' + error.message, true);
+        //});
     } else {
         displayMessage('No image captured to upload.', true);
     }

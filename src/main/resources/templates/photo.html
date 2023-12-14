@@ -19,6 +19,12 @@
             <img id="image-display" src="" alt="Captured image will appear here"/>
         </div>
     </div>
+
+    <!--Dynamically pass in the client's access token to script.js-->
+    <script th:inline="javascript">
+        var accessToken = /*[[${accessToken}]]*/ 'defaultToken';
+    </script>
+
     <script type="text/javascript" th:src="@{/js/script.js}"></script>
 </body>
 </html>
