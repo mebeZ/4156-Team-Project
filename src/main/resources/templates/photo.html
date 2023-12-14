@@ -9,14 +9,19 @@
 </head>
 <body>
     <div class="camera-container">
-        <video id="camera-stream" autoplay></video>
-        <canvas id="photo-preview" style="display: none;"></canvas>
-        <button id="capture-btn">Capture Photo</button>
-        <button id="upload-btn" style="display: none;">Upload Photo</button>
-        <button id="fetch-image-btn">Fetch Image</button>
-        <div id="messages"></div>
-        <div id="image-container">
-            <img id="image-display" src="" alt="Captured image will appear here"/>
+        <div id="video-capture">
+            <video id="camera-stream" autoplay></video>
+            <button id="capture-btn">Capture Photo</button>
+        </div>
+        <div id="image-capture">
+            <canvas id="photo-preview"></canvas>
+            <div id="image-container">
+                <form id="image-upload-form">
+                    <label for="image-name">Image Name: </label>
+                    <input id="image-name" type="text" name="image-name" required>
+                    <button id="upload-btn" type="submit">Upload Photo</button>
+                </form>
+            </div>
         </div>
     </div>
 

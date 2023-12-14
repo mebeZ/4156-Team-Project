@@ -21,10 +21,16 @@ body {
     border-radius: 8px;
     text-align: center;
 }
-#camera-stream, #photo-preview, #image-display {
+#camera-stream, #photo-preview {
     max-width: 100%;
     border-radius: 4px;
     margin-top: 10px;
+}
+#image-capture, #image-upload-form {
+    display: none;
+}
+#upload-button {
+    display: inline-block;
 }
 button {
     padding: 10px 15px;
@@ -41,9 +47,6 @@ button:hover {
 }
 #image-container {
     margin-top: 20px;
-}
-#image-display {
-    display: none; /* Hide the image display initially */
 }
 .message {
     color: #32CD32;

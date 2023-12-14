@@ -1,13 +1,10 @@
 const video = document.getElementById('camera-stream');
 const canvas = document.getElementById('photo-preview');
-const imageDisplay = document.getElementById('image-display');
 const captureButton = document.getElementById('capture-btn');
 const uploadButton = document.getElementById('upload-btn');
-const fetchImageButton = document.getElementById('fetch-image-btn');
-const messages = document.getElementById('messages');
 const context = canvas.getContext('2d');
-
-//console.log("Hello world");
+const imageCapture = document.getElementById('image-capture');
+const imageUploadForm = document.getElementById('image-upload-form');
 
 // Fill the camera-stream element with video from the Webcam if there is one
 if (navigator.mediaDevices.getUserMedia) {
@@ -31,16 +28,25 @@ captureButton.addEventListener('click', function() {
     // Converts the content of the canvas to a Blob (Binary Large Object) which represents the image in PNG format
     canvas.toBlob(function(blob) {
         capturedBlob = blob;
-        imageDisplay.style.display = 'block';
-        imageDisplay.src = URL.createObjectURL(blob);
-        uploadButton.style.display = 'inline-block';
+        imageCapture.style.display = 'block'; // Render the captured image div visible 
+        imageUploadForm.style.display = 'block'; // Render the upload form visible
     }, 'image/png');
 });
 
-uploadButton.addEventListener('click', function() {
+// When the user submits the Upload Photo form (by clicking on the 'Upload Photo' button), upload the captured image by making a POST request to /upload controller with the image passed in as form data
+imageUploadForm.addEventListener('submit', function(event) {
+    // Prevent default form submission behavior
+    event.preventDefault();
+
+    imageCapture.style.display = 'none'; // Render the captured image div invisible 
+    imageUploadForm.style.display = 'none'; // Render the upload form invisible
+    
+    // Retrieve the filename from the form
+    const imageName = document.getElementById("image-name").value + '.png';
+    console.log("Image name: ", imageName);
     if (capturedBlob) {
         const formData = new FormData();
-        formData.append('file', capturedBlob, 'capture.png'); // 'file' corresponds to @RequestParam("file") in the /upload controller
+        formData.append('file', capturedBlob, imageName); // 'file' corresponds to @RequestParam("file") in the /upload controller
         formData.append('token', accessToken); // 'token' corresponds to @RequestParam("token") in the /upload controller
         fetch('http://localhost:8080/upload', {
             method: 'POST',
@@ -58,41 +64,7 @@ uploadButton.addEventListener('click', function() {
         .catch(error => {
             console.log("Error: ", error);
         });
-        //.then(data => {
-        //    displayMessage('Image uploaded successfully!', false, data.imageId);
-        //})
-        //.catch((error) => {
-        //    displayMessage('Upload failed: ' + error.message, true);
-        //});
     } else {
-        displayMessage('No image captured to upload.', true);
+        console.log("No image captured to upload");
     }
-});
-
-fetchImageButton.addEventListener('click', function() {
-    var imageId = prompt("Enter the image ID to fetch:");
-    fetch('/image/' + imageId)
-        .then(response => {
-            if (response.ok) {
-                return response.blob();
-            } else {
-                throw new Error('Network response failed.');
-            }
-        })
-        .then(blob => {
-            imageDisplay.style.display = 'block';
-            imageDisplay.src = URL.createObjectURL(blob);
-            displayMessage('Image fetched successfully!', false, imageId);
-        })
-        .catch(e => {
-            displayMessage('Failed to fetch image: ' + e, true);
-        });
-});
-
-function displayMessage(msg, isError, imageId) {
-    if (imageId) {
-        msg += " Image ID: " + imageId;
-    }
-    messages.textContent = msg;
-    messages.className = isError ? 'message error' : 'message';
-}
+})
