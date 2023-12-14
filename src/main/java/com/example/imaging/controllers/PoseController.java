@@ -75,7 +75,7 @@ public class PoseController {
         );
 
         Mat image = bufferedImageToMat(bufferedImage);
-        Size size = image.size();
+        Size size = image.size(); //test
 
         double focalLength = size.width;
         org.opencv.core.Point center = new org.opencv.core.Point(size.width / 2, size.height / 2);
