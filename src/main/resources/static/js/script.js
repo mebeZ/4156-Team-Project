@@ -45,16 +45,18 @@ imageUploadForm.addEventListener('submit', function(event) {
     const imageName = document.getElementById("image-name").value + '.png';
     console.log("Image name: ", imageName);
     if (capturedBlob) {
-        const formData = new FormData();
-        formData.append('file', capturedBlob, imageName); // 'file' corresponds to @RequestParam("file") in the /upload controller
-        formData.append('token', accessToken); // 'token' corresponds to @RequestParam("token") in the /upload controller
+        const uploadData = new FormData();
+        uploadData.append('file', capturedBlob, imageName); // 'file' corresponds to @RequestParam("file") in the /upload controller
+        uploadData.append('token', accessToken); // 'token' corresponds to @RequestParam("token") in the /upload controller
         fetch('http://localhost:8080/upload', {
             method: 'POST',
-            body: formData
+            body: uploadData
         })
         .then(response => {
             if(response.ok) {
-                return response.text();
+                const eyeData = new FormData();
+                eyeData.append('name', imageName); // 'name' corresponds to @RequestParam("name") in the /eye-color controller
+                eyeData.append('token', accessToken); // 'token' corresponds to @RequestParam("token") in the /eye-color controller
             }
             throw new Error('Network response failed.');
         })

@@ -48,7 +48,7 @@ public class UploadController {
      * @returns: Root path to the image: /images/face-images/{file_name.jpeg}
      */
     private String transferFile(MultipartFile file, String uploadDir) throws Exception {
-         // Get current working directory
+        // Get current working directory
         String currDir = System.getProperty("user.dir");
 
         // Create absolute path for saving the image file
