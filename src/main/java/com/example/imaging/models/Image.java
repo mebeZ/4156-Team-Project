@@ -32,6 +32,7 @@ public class Image {
     private String name;
     private String type;
 
+    // Store the image directly in the database as a large binary object 
     @Lob
     @Column(name = "imageData", length = 100000)
     private byte[] imageData;

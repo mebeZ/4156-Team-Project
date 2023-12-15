@@ -42,6 +42,8 @@ public class UploadController {
     public void uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
         storageService.uploadImage(file);
     }*/
+    
+    // Given a Multipartfile representing an Image, add this image to the Image table of the database; a wrapper for StorageService.uploadImage
     @PostMapping("/upload-image")
     public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file) {
         try {
@@ -71,6 +73,7 @@ public class UploadController {
     }
     */
 
+    // Given an image id (which can be viewed in the Image table of the db), return a ResponseEntity with the corresponding image in the response body and image metadata in the response headers  
     @GetMapping("/image/{id}")
     public ResponseEntity<byte[]> getImageById(@PathVariable Long id) {
         Optional<Image> image = imageDao.findById(String.valueOf(id));

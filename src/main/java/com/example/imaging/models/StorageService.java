@@ -13,6 +13,7 @@ public class StorageService {
     @Autowired
     private ImageRepository imageRepo;
 
+    // Given a multipart file representing an image, add that image to the Images table of the database 
     public String uploadImage(MultipartFile file) throws IOException {
         Image savedImage = imageRepo.save(Image.builder()
             .name(file.getOriginalFilename())

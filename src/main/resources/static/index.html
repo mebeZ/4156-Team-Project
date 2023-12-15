@@ -49,7 +49,7 @@
             margin-top: 20px;
         }
         #image-display {
-            display: none; //Hide the image display initially
+            display: none;
         }
         .message {
             color: #32CD32;
@@ -84,6 +84,7 @@
 
         let capturedBlob = null; // To hold the blob after capturing the photo
 
+        // Display the video stream to the UI
         if (navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(function (stream) {
@@ -94,6 +95,7 @@
                 });
         }
 
+        // When the capture button is clicked, capture the current frame (as 'blob') and draw it to the canvas element; also render the upload button visible
         captureButton.addEventListener('click', function() {
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
@@ -106,6 +108,7 @@
             }, 'image/png');
         });
 
+        
         uploadButton.addEventListener('click', function() {
             if (capturedBlob) {
                 const formData = new FormData();
