@@ -1,6 +1,5 @@
 package com.example.imaging.controllers;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -13,9 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-//import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.ui.Model;
 
 import com.example.imaging.models.Client;
@@ -37,13 +34,8 @@ public class UploadController {
     @Value("${upload.dir}")
     private String uploadDir;
 
-    @GetMapping("/upload")
-    public String uploadForm() {
-        return "upload";
-    }
-
     /*
-     * Transfer the Multipartfile @file to the specified directory @uploadDir
+     * Helper function which transfers the Multipartfile @file to the specified directory @uploadDir
      * Relies on vodoo filepath operations
      * @returns: Root path to the image: /images/face-images/{file_name.jpeg}
      */
@@ -77,8 +69,21 @@ public class UploadController {
         return pathString.substring(index + "static".length());
     }
 
+    /*
+     * Given a legitimate access token, render the HTML page which lets a client upload an image to the service
+     */
+    @GetMapping("/upload")
+    public String renderUploadPage(Model model, @RequestParam(name="accessToken") String token) {
+        model.addAttribute("accessToken", token);
+        return "upload";
+    }
+
+    /*
+     * Given a Multipartfile and a legitimate access token, upload the Multipartfile to the service
+     * @returns: ResponseEntity indicating whether the file upload was successful
+     */
     @PostMapping("/upload")
-    private ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("token") String token) throws Exception {
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("token") String token) throws Exception {
         // Find the client with the specified token
         Optional<Client> tclient = clientDao.findById(token);
         if (!tclient.isPresent()) {
@@ -107,15 +112,9 @@ public class UploadController {
         return new ResponseEntity<>("Upload successful", HttpStatus.OK);
     }
 
-    @GetMapping("/display")
-    public String displayImage(@RequestParam(name="imageUrl") String imageUrl, Model model) {
-        model.addAttribute("imageUrl", imageUrl);
-        return "display";
-    }
-
-    @GetMapping("/photo")
-    public String takePhoto(Model model, @RequestParam(name="accessToken") String token) {
-        model.addAttribute("accessToken", token);
-        return "photo";
+    // Create mapping to test fetch.html template
+    @GetMapping("/fetch")
+    public String renderFetchTemplate() {
+        return "fetch";
     }
 }
