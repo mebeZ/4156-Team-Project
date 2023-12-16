@@ -9,13 +9,15 @@
 </head>
 <body>
     <div class="dropdown">
+        <span>Fetch Image</span>
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Dropdown button
+            SELECT
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <!--Extract the filename from the filepath for each image: https://www.thymeleaf.org/apidocs/thymeleaf/2.0.5/org/thymeleaf/util/StringUtils.html-->
             <a class="dropdown-item" href="#" th:each="image : ${images}" th:text="${#strings.substringAfter(image.imagePath, 'face-images/')}" onclick="changeDropdownTitle(this)"></a>
         </div>
+        <button id="submitButton" type="button" class="btn btn-primary">Ok</button>
     </div>
 
     <script type="text/javascript" th:src="@{/js/dropdown.js}"></script>
