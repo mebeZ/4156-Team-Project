@@ -114,7 +114,9 @@ public class UploadController {
 
     // Create mapping to test fetch.html template
     @GetMapping("/fetch")
-    public String renderFetchTemplate() {
+    public String renderFetchTemplate(Model model) {
+        Iterable<Image> images = imageDao.findAll();
+        model.addAttribute("images", images);
         return "fetch";
     }
 }

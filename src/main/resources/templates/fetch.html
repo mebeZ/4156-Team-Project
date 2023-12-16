@@ -13,9 +13,8 @@
             Dropdown button
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
+            <!--Extract the filename from the filepath for each image: https://www.thymeleaf.org/apidocs/thymeleaf/2.0.5/org/thymeleaf/util/StringUtils.html-->
+            <a class="dropdown-item" href="#" th:each="image : ${images}" th:text="${#strings.substringAfter(image.imagePath, 'face-images/')}"></a>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
