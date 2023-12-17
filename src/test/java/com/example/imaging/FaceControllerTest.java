@@ -24,8 +24,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import nu.pattern.OpenCV;
 
 import com.example.imaging.controllers.EyeColorController;
-import com.example.imaging.controllers.IOService;
 import com.example.imaging.models.EyeColorInfo;
+import com.example.imaging.services.IOService;
 
 @SpringBootTest
 class FaceControllerTest {

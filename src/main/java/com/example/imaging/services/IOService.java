@@ -1,9 +1,11 @@
-package com.example.imaging.controllers;
+package com.example.imaging.services;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
@@ -28,19 +30,18 @@ public class IOService {
             throw new FileNotFoundException("No image file containing name = " + name);
         }
         
-        File imagesFolder = new File("src/main/resources/static");
+        File imagesFolder = new File("src/main/resources/static/images/face-images/");
         // TODO: Refactor getPathToFile so that it searches recursively starting from a sub-directory
-        for (File folder : imagesFolder.listFiles()) {
-            for (File file : folder.listFiles()) {
-                if (file.isFile()) {
-                    String filename = file.getName();
-                    System.out.println(filename);
-                    
-                    System.out.println(filename.indexOf(name));
-                    if (filename.indexOf(name) >= 0) {
-                        String filepath = file.getAbsolutePath();
-                        return filepath;
-                    }
+        
+        for (File file : imagesFolder.listFiles()) {
+            if (file.isFile()) {
+                String filename = file.getName();
+                System.out.println(filename);
+                
+                System.out.println(filename.indexOf(name));
+                if (filename.indexOf(name) >= 0) {
+                    String filepath = file.getAbsolutePath();
+                    return filepath;
                 }
             }
         }
@@ -119,11 +120,26 @@ public class IOService {
     }
 
     /*
+     * Given a name of an image file, load it as an array of bytes
+     */
+    public static byte[] loadFileAsBinary(String name) throws Exception {
+        String filepath = getPathToFile(name);
+        Path imagePath = Paths.get(filepath);
+        return Files.readAllBytes(imagePath);
+    }
+
+
+    /*
      * Locates the image located at localpath and moves it to static/face-images
      */
     public static void uploadLocalImage(String localPath) throws Exception {
         Mat img = Imgcodecs.imread(localPath);
         String name = getImageName(localPath);
         Imgcodecs.imwrite("src/main/resources/static/images/face-images/" + name, img);
+    }
+
+    public static void main(String[] args) throws Exception {
+        byte[] fileBytes = loadFileAsBinary("hello.png");
+        System.out.println("Length of loaded file: " + fileBytes.length);
     }
 }

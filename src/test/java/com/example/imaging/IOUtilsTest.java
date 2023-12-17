@@ -18,7 +18,7 @@ import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.example.imaging.controllers.IOService;
+import com.example.imaging.services.IOService;
 
 import nu.pattern.OpenCV;
 

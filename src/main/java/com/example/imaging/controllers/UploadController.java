@@ -112,11 +112,4 @@ public class UploadController {
         return new ResponseEntity<>("Upload successful", HttpStatus.OK);
     }
 
-    // Create mapping to test fetch.html template
-    @GetMapping("/fetch")
-    public String renderFetchTemplate(Model model) {
-        Iterable<Image> images = imageDao.findAll();
-        model.addAttribute("images", images);
-        return "fetch";
-    }
 }
