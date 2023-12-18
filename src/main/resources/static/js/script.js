@@ -15,6 +15,7 @@ const fetchImageButton = document.getElementById("fetch-image-button");
 const uploadContainer = document.getElementById("upload-container");
 const fetchContainer = document.getElementById("fetch-container");
 
+const imageInfo = document.getElementById("image-info");
 let selectedImageName = null;
 
 /*
@@ -32,6 +33,19 @@ fetchImageButton.addEventListener('click', function() {
     if (selectedImageName == null) {
         throw new Error("Image not selected"); 
     }
+
+    // Get information about the image to display; call getFoo (to replace with getEyeColor)
+    getFooUrl = "http://localhost:8080/foo?name="+selectedImageName+"&accessToken="+accessToken;
+    console.log("fooUrl = " + getFooUrl);
+    fetch(getFooUrl)
+    .then(response => {
+        return response.text();
+    })
+    .then(data => {
+        console.log("Eye color: ", data);
+        imageInfo.textContent = "Eye color: " + data;
+    })
+
     getImageUrl = "http://localhost:8080/getImage?selectedImageName="+selectedImageName;
     console.log("Url = " + getImageUrl); // Successfully prints this
     fetch(getImageUrl)

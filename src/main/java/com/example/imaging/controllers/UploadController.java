@@ -26,6 +26,7 @@ import com.example.imaging.models.Client;
 import com.example.imaging.models.Image;
 import com.example.imaging.models.data.ClientRepository;
 import com.example.imaging.models.data.ImageRepository;
+import com.example.imaging.services.IOService;
 import com.google.common.collect.Iterables;
 
 
@@ -123,4 +124,10 @@ public class UploadController {
         return new ResponseEntity<>("Upload successful", HttpStatus.OK);
     }
 
+    @GetMapping("/getImage")
+    public ResponseEntity<byte []> getImage(@RequestParam(name="selectedImageName") String imageName) throws Exception {
+        byte[] imageBytes = IOService.loadFileAsBinary(imageName);
+        HttpHeaders headers = new HttpHeaders();
+        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+    }
 }

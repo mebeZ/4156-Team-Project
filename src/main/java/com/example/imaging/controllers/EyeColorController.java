@@ -385,6 +385,12 @@ public class EyeColorController {
 		return numerator / denominator;
 	}
 
+
+	@GetMapping("/foo")
+	public String getFoo(@RequestParam(value="name") String name, @RequestParam(value="accessToken") String token) throws Exception {
+		return "brown";
+	}
+
 	// A GET request to /eye-color binds to the calling of method 'getEyeColor'
 	// @RequestParam binds the value of the query parameter name to the value of parameter name in the method
 	// localhost:8080/eye-color?name=carl
