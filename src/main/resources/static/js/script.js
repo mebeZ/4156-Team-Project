@@ -83,7 +83,7 @@ captureButton.addEventListener('click', function() {
 });
 
 // When the user submits the Upload Photo form (by clicking on the 'Upload Photo' button), upload the captured image by making a POST request to /upload controller with the image passed in as form data
-imageUploadForm.addEventListener('submit', function(event) {
+imageUploadForm.addEventListener('submit', async function(event) {
     // Prevent default form submission behavior
     event.preventDefault();
 
@@ -98,20 +98,20 @@ imageUploadForm.addEventListener('submit', function(event) {
         const uploadData = new FormData();
         uploadData.append('file', capturedBlob, imageName); // 'file' corresponds to @RequestParam("file") in the /upload controller
         uploadData.append('token', accessToken); // 'token' corresponds to @RequestParam("token") in the /upload controller
-        fetch('http://localhost:8080/upload', {
+        // Wait until the image has been uploaded to the db (or has started) before redirecting at the end of this function: 'await' enables the fetching of images that we've just uploaded
+        await fetch('http://localhost:8080/upload', {
             method: 'POST',
             body: uploadData
         })
         .then(response => {
+            console.log(response.body);
             if(response.ok) {
                 const eyeData = new FormData();
                 eyeData.append('name', imageName); // 'name' corresponds to @RequestParam("name") in the /eye-color controller
                 eyeData.append('token', accessToken); // 'token' corresponds to @RequestParam("token") in the /eye-color controller
+            } else {
+                throw new Error('Network response failed.');
             }
-            throw new Error('Network response failed.');
-        })
-        .then(message => {
-            console.log("Response from /upload controller: ", message);
         })
         .catch(error => {
             console.log("Error: ", error);
@@ -119,6 +119,8 @@ imageUploadForm.addEventListener('submit', function(event) {
     } else {
         console.log("No image captured to upload");
     }
+    // Redirect to /upload in order to update the model to include the uploaded image so that it can be fetched
+    window.location.href = "/upload?accessToken=" + encodeURIComponent(accessToken);
 });
 
 // For the CancelButton, we must hide the #upload-container and #image-capture divs and show the #fetch-container div

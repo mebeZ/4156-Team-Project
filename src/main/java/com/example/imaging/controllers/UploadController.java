@@ -26,6 +26,7 @@ import com.example.imaging.models.Client;
 import com.example.imaging.models.Image;
 import com.example.imaging.models.data.ClientRepository;
 import com.example.imaging.models.data.ImageRepository;
+import com.google.common.collect.Iterables;
 
 
 @Controller
@@ -103,7 +104,7 @@ public class UploadController {
 
         // Make sure that the uploaded file is not empty
         if (file.isEmpty()) {
-            return new ResponseEntity<>("File cannot be empty", HttpStatus.BAD_REQUEST);
+            throw new Exception("File cannot be empty");
         }
 
         // Move the Multipartfile to inside the static resources 
