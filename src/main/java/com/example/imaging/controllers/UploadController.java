@@ -124,6 +124,14 @@ public class UploadController {
         return new ResponseEntity<>("Upload successful", HttpStatus.OK);
     }
 
+    @PostMapping("/upload-image")
+    public ResponseEntity<String> uploadImage(@RequestParam("name") String imageName) throws Exception {
+        String imgPath = IOService.getPathToFile(imageName);
+        imageDao.save(new Image(imgPath));
+        return new ResponseEntity<>("Upload image successful", HttpStatus.OK);
+    }
+
+
     @GetMapping("/getImage")
     public ResponseEntity<byte []> getImage(@RequestParam(name="selectedImageName") String imageName) throws Exception {
         byte[] imageBytes = IOService.loadFileAsBinary(imageName);

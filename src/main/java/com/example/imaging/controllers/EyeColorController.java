@@ -130,8 +130,8 @@ public class EyeColorController {
 	 */
 	public static double[] detectIris(Mat eyeImage) throws Exception {
 		
-		HighGui.imshow("Color eye image", eyeImage);
-		HighGui.waitKey();
+		//HighGui.imshow("Color eye image", eyeImage);
+		//HighGui.waitKey();
 		
 		if (eyeImage == null) {
 			throw new NullPointerException("eyeImage cannot be null");
@@ -140,8 +140,8 @@ public class EyeColorController {
 		Mat grayEyeImage = new Mat();
 		Imgproc.cvtColor(eyeImage, grayEyeImage, Imgproc.COLOR_BGR2GRAY);
 		
-		HighGui.imshow("Gray eye image", grayEyeImage);
-		HighGui.waitKey(); 
+		//HighGui.imshow("Gray eye image", grayEyeImage);
+		//HighGui.waitKey(); 
 
 		// Apply a median blur to the image to avoid false positives for circle detection
 		
@@ -153,9 +153,9 @@ public class EyeColorController {
 
 		
 		Mat thresholdEyeImage = new Mat();
-		Imgproc.threshold(grayEyeImage, thresholdEyeImage, 30, 255, Imgproc.THRESH_BINARY);
+		Imgproc.threshold(grayEyeImage, thresholdEyeImage, 30, 255, Imgproc.THRESH_BINARY_INV);
 
-		// Store the detected circles
+		// Find circles using Hough transform
 		Mat irisCircles = new Mat();
 		// The min and max radius of iris circles to look for based on empirical observation: i.e. the size of the eye bounding rectangle compared to the size of the iris
 		int minIrisRadius = grayEyeImage.rows() / 7;
@@ -164,34 +164,29 @@ public class EyeColorController {
 		double p1 = 100;
 		double p2 = 30;
 
-		// Find the circles using Hough transform
-		Imgproc.HoughCircles(grayEyeImage, irisCircles, Imgproc.HOUGH_GRADIENT, 1.0, minDist, p1, p2, minIrisRadius, maxIrisRadius);
-
-		/*
 		while (irisCircles.cols() != 1) {
 			Imgproc.HoughCircles(grayEyeImage, irisCircles, Imgproc.HOUGH_GRADIENT, 1.0,
 			minDist,
 			p1, p2, minIrisRadius, maxIrisRadius);
-			System.out.println("minIrisRadius = " + minIrisRadius);
-			System.out.println("maxIrisRadius = " + maxIrisRadius);
 			// If no circles are detected, increase the max radius
 			if (irisCircles.cols() < 1 && maxIrisRadius <= (grayEyeImage.rows() / 4)) {
 				maxIrisRadius *= 2;
 			// if we've increased the max radius, and still no circles are detected, then there likely is not an iris in the image, so throw an exception
 			} else if (irisCircles.cols() < 1) {
-				throw new Exception("detectIris failed: " + irisCircles.cols() + " circles were detected"); 
+				throw new Exception("detectIris failed: Number of detected circles should be 1 (i.e. the iris). However, " + irisCircles.cols() + " were detected"); 
 			// If more than 1 circles are detected, tweak the parameters such that less false positives are detected
 			} else if (irisCircles.cols() > 1 && minDist <= (double)grayEyeImage.rows()/16) {
 				minDist *= 1.5;
 				p2 *= 1.5;
 			// If we've tweaked the parameters, and false positives are still detected, then we cannot discern the iris in the image, so throw an exception
 			} else if (irisCircles.cols() > 1) {
-				throw new Exception("detectIris failed: More than 1 circle was detected"); 
+				throw new Exception("detectIris failed: Number of detected circles should be 1 (i.e. the iris). However, " + irisCircles.cols() + " were detected"); 
 			}
 		}
-		*/
 
-		if (irisCircles.cols() == 0) {
+		int numCircles = irisCircles.cols();
+		System.out.println("Number of detected circles (ideally 1 for the iris): " + numCircles);
+		if (numCircles == 0) {
 			throw new Exception("No circles detected");
 		}
 

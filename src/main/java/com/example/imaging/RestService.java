@@ -14,8 +14,8 @@ public class RestService {
     public static void main(String[] args) throws Exception {
         //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         OpenCV.loadLocally();
-        String color = EyeColorController.getEyeColor("carl", "client1");
-        System.out.println("Eye color: " + color);
-        //SpringApplication.run(RestService.class, args);
+        //String color = EyeColorController.getEyeColor("sarah", "client1");
+        //System.out.println("Eye color: " + color);
+        SpringApplication.run(RestService.class, args);
     }
 }
