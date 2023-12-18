@@ -1,48 +1,40 @@
 package com.example.imaging.models;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 public class Client {
     @Id
     private String accessToken;
-    //@OneToMany
-    //@JoinColumn(name = "client_imagePath")
-    //private List<Image> imageList;
+    private String imagePath;
 
     protected Client() {}
 
     public Client(String accessToken) {
         this.accessToken = accessToken;
-        //imageList = new ArrayList<Image>();
+        this.imagePath = "";
     }
-
-    /*
-    public void addImage(Image img) {
-        imageList.add(img);
-    }
-    */
 
     // Getter and setter methods
-    public String getAccessToken() {
-        return this.accessToken;
+    public String getImageName() {
+        return imagePath;
     }
 
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    // Getter methods
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    // String representation of Client object
     @Override
     public String toString() {
-        /*
-        List<String> imageStrings = new ArrayList<String>();
-        for (Image img : imageList) {
-            imageStrings.add(img.toString());
-        }
-        String imageList = String.join(",", imageStrings);
-        */
-        return String.format("Client['%s']", accessToken);
+        return String.format("Client[accessToken='%s', imagePath='%s']", accessToken, imagePath);
     }
 }

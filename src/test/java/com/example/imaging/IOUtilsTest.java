@@ -18,6 +18,8 @@ import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.example.imaging.services.IOService;
+
 import nu.pattern.OpenCV;
 
 import javax.imageio.ImageIO;
@@ -48,7 +50,7 @@ public class IOUtilsTest {
 	* */
     @Test
 	void loadInvalidImageFile() {
-		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile("foo.txt")); // foo.txt is an invalid file
+		assertThrows(FileNotFoundException.class, () -> IOService.getPathToFile("foo.txt")); // foo.txt is an invalid file
 	}
 
 
@@ -58,7 +60,7 @@ public class IOUtilsTest {
 	 * */
 	@Test
 	void loadImageFromEmptyString() {
-		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile(""));
+		assertThrows(FileNotFoundException.class, () -> IOService.getPathToFile(""));
 	}
 
 	/*Start of unit tests for method loadFileAsMat
@@ -67,7 +69,7 @@ public class IOUtilsTest {
 	 * */
 	@Test
 	void loadImageFromNULL() {
-		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile(null));
+		assertThrows(FileNotFoundException.class, () -> IOService.getPathToFile(null));
 	}
 
 	/*Start of unit tests for method loadFileAsMat
@@ -76,8 +78,8 @@ public class IOUtilsTest {
 	 * */
 	@Test
 	void loadValidImageFile() throws FileNotFoundException {
-		Mat result = IOUtils.loadFileAsMat("samantha");
-		Mat expected = Imgcodecs.imread( "src/main/resources/static/face-images/samantha-green.jpeg");
+		Mat result = IOService.loadFileAsMat("samantha");
+		Mat expected = Imgcodecs.imread( "src/main/resources/static/images/face-images/samantha-green.jpeg");
 		Assertions.assertEquals(expected.rows(), result.rows());
 		Assertions.assertEquals(expected.cols(), result.cols());
 	}
@@ -90,13 +92,13 @@ public class IOUtilsTest {
 	@Test
 	void loadImageFromFolderWithOnlySubfoldersNoMatch() {
 		// Create subfolders without matching names
-		File subfolder1 = new File("src/main/resources/static/face-images/subfolder1");
-		File subfolder2 = new File("src/main/resources/static/face-images/subfolder2");
+		File subfolder1 = new File("src/main/resources/static/images/face-images/subfolder1");
+		File subfolder2 = new File("src/main/resources/static/images/face-images/subfolder2");
 		subfolder1.mkdirs();
 		subfolder2.mkdirs();
 
 		try {
-			assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile("nonexistentname"));
+			assertThrows(FileNotFoundException.class, () -> IOService.getPathToFile("nonexistentname"));
 		} finally {
 			// Clean up created subfolders
 			subfolder1.delete();
@@ -108,16 +110,16 @@ public class IOUtilsTest {
 	// d. In a mock image folder there is one or more folders
 	@Test
 	void loadImageFromFolderWithSubfoldersAndImagesFirstMatchingSubfolder() {
-		File subfolder1 = new File("src/main/resources/static/face-images/subfolder1");
-		File subfolder2 = new File("src/main/resources/static/face-images/subfolder2");
+		File subfolder1 = new File("src/main/resources/static/images/face-images/subfolder1");
+		File subfolder2 = new File("src/main/resources/static/images/face-images/subfolder2");
 		subfolder1.mkdirs();
 		subfolder2.mkdirs();
 
 		// Create an image file in both subfolders
-		Path sourcePath1 = Paths.get("src/main/resources/static/face-images/samantha-green.jpeg");
-		Path destinationPath1 = Paths.get("src/main/resources/static/face-images/subfolder1/samantha-green.jpeg");
-		Path sourcePath2 = Paths.get("src/main/resources/static/face-images/carl-blue.jpeg");
-		Path destinationPath2 = Paths.get("src/main/resources/static/face-images/subfolder2/carl-blue.jpeg");
+		Path sourcePath1 = Paths.get("src/main/resources/static/images/face-images/samantha-green.jpeg");
+		Path destinationPath1 = Paths.get("src/main/resources/static/images/face-images/subfolder1/samantha-green.jpeg");
+		Path sourcePath2 = Paths.get("src/main/resources/static/images/face-images/carl-blue.jpeg");
+		Path destinationPath2 = Paths.get("src/main/resources/static/images/face-images/subfolder2/carl-blue.jpeg");
 
 		try {
 			Files.copy(sourcePath1, destinationPath1, StandardCopyOption.REPLACE_EXISTING);
@@ -128,7 +130,7 @@ public class IOUtilsTest {
 
 		String imagePath = null;
 		try {
-			imagePath = IOUtils.getPathToFile("samantha");
+			imagePath = IOService.getPathToFile("samantha");
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
@@ -166,7 +168,7 @@ public class IOUtilsTest {
 		mockImage.mkdirs();
 
 		//copy samantha-green.jpeg to mock-images folder
-		Path sourcePath = Paths.get("src/main/resources/static/face-images/samantha-green.jpeg");
+		Path sourcePath = Paths.get("src/main/resources/static/images/face-images/samantha-green.jpeg");
 		Path destinationPath = Paths.get("src/main/resources/static/images/mock-images/samantha-green.jpeg");
 		try {
 			Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
@@ -176,7 +178,7 @@ public class IOUtilsTest {
 		}
 
 		//copy carl-blue.jpeg to mock-images folder and rename as samantha-blue.jpeg
-		sourcePath = Paths.get("src/main/resources/static/face-images/carl-blue.jpeg");
+		sourcePath = Paths.get("src/main/resources/static/images/face-images/carl-blue.jpeg");
 		destinationPath = Paths.get("src/main/resources/static/images/mock-images/samantha-blue.jpeg");
 		try {
 			Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
@@ -186,7 +188,7 @@ public class IOUtilsTest {
 		}
 
 		//test loadFileAsMat can read the samantha-green as the first input between samantha-blue and samantha-green in mock-images folder
-		Mat result = IOUtils.loadFileAsMat("samantha");
+		Mat result = IOService.loadFileAsMat("samantha");
 		Mat expected = Imgcodecs.imread( "src/main/resources/static/images/mock-images/samantha-green.jpeg");
 
 		Assertions.assertEquals(expected.rows(), result.rows());
@@ -206,7 +208,7 @@ public class IOUtilsTest {
 	 * */
 	@Test
 	void loadInvalidBufferedImageFile() {
-		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile("foo.txt"));
+		assertThrows(FileNotFoundException.class, () -> IOService.getPathToFile("foo.txt"));
 	}
 
 	/*Start of unit tests for method loadFileAsBufferedImage
@@ -215,7 +217,7 @@ public class IOUtilsTest {
 	 * */
 	@Test
 	void loadBufferedImageFromEmptyString() {
-		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile(""));
+		assertThrows(FileNotFoundException.class, () -> IOService.getPathToFile(""));
 
 	}
 
@@ -225,7 +227,7 @@ public class IOUtilsTest {
 	 * */
 	@Test
 	void loadBufferedImageFromNULL() {
-		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile(null));
+		assertThrows(FileNotFoundException.class, () -> IOService.getPathToFile(null));
 	}
 
 	/*Helper function for test valid file input for loadFileAsBufferedImage
@@ -252,9 +254,9 @@ public class IOUtilsTest {
 	 * */
 	@Test
 	void loadValidBufferedImageFile() {
-		File file = new File("src/main/resources/static/face-images/samantha-green.jpeg");
+		File file = new File("src/main/resources/static/images/face-images/samantha-green.jpeg");
 		BufferedImage ExpectedBufferedImage = null;
-		BufferedImage result = IOUtils.loadFileAsBufferedImage("samantha");
+		BufferedImage result = IOService.loadFileAsBufferedImage("samantha");
 		try {
 			ExpectedBufferedImage = ImageIO.read(file);
 		} catch (IOException e) {
@@ -293,7 +295,7 @@ public class IOUtilsTest {
 	// a. If we pass in a valid file name, we should get the correct image name and check its correctness.
 	@Test
 	void testFileNameWithValidNameAndCheckCorrectness() throws FileNotFoundException {
-		String imageName = IOUtils.getImageName("carl");
+		String imageName = IOService.getImageName("carl");
 		Assertions.assertTrue(imageName.contains("carl"));
 		Assertions.assertTrue(imageName.endsWith(".jpeg"));
 	}
@@ -301,19 +303,19 @@ public class IOUtilsTest {
 	// b. If we pass in a non-existent name, we should get a FileNotFoundException.
 	@Test
 	void testFileNameWithNonExistentName() {
-		assertThrows(FileNotFoundException.class, () -> IOUtils.getImageName("nonexistentname"));
+		assertThrows(FileNotFoundException.class, () -> IOService.getImageName("nonexistentname"));
 	}
 
 	// c. If we pass in an empty string, we should get a FileNotFoundException.
 	@Test
 	void testFileNameFromEmptyString() {
-		assertThrows(FileNotFoundException.class, () -> IOUtils.getImageName(""));
+		assertThrows(FileNotFoundException.class, () -> IOService.getImageName(""));
 	}
 
 	// d. If we pass in a null value, we should get a FileNotFoundException.
 	@Test
 	void testFileNameWithNull() {
-		assertThrows(FileNotFoundException.class, () -> IOUtils.getImageName(null));
+		assertThrows(FileNotFoundException.class, () -> IOService.getImageName(null));
 	}
 
 	// e. If we pass in a valid name, we should get the correct image name.
@@ -321,7 +323,7 @@ public class IOUtilsTest {
 	void testFileNameWithValidName() throws FileNotFoundException {
 		String name = "samantha";
 		String expectedName = "samantha-green.jpeg";
-		String result = IOUtils.getImageName(name);
+		String result = IOService.getImageName(name);
 
 		// Extract the file name from the full path
 		// resultFileName = Paths.get(result).getFileName().toString();
@@ -332,8 +334,8 @@ public class IOUtilsTest {
 	// f. If we pass in a valid name, we should get the correct image name, and the associated image file should exist.
 	@Test
 	void testValidNameReturnsFile() throws FileNotFoundException {
-		String imageName = IOUtils.getImageName("samantha");
-		String imagePath = "src/main/resources/static/face-images/" + imageName;
+		String imageName = IOService.getImageName("samantha");
+		String imagePath = "src/main/resources/static/images/face-images/" + imageName;
 		File imageFile = new File(imagePath);
 		Assertions.assertTrue(imageFile.exists());
 	} // end of unit tests for the getImageName()
@@ -346,7 +348,7 @@ public class IOUtilsTest {
 //		mockImageFolder.mkdirs();
 //
 //		// Copy valid image files to the mock folder
-//		Path sourcePath1 = Paths.get("src/main/resources/static/face-images/samantha-green.jpeg");
+//		Path sourcePath1 = Paths.get("src/main/resources/static/images/face-images/samantha-green.jpeg");
 //		Path destinationPath1 = Paths.get("src/main/resources/static/images/mock-images/samantha-green.jpeg");
 //		try {
 //			Files.copy(sourcePath1, destinationPath1, StandardCopyOption.REPLACE_EXISTING);
@@ -354,7 +356,7 @@ public class IOUtilsTest {
 //			e.printStackTrace();
 //		}
 //
-//		Path sourcePath2 = Paths.get("src/main/resources/static/face-images/carl-blue.jpeg");
+//		Path sourcePath2 = Paths.get("src/main/resources/static/images/face-images/carl-blue.jpeg");
 //		Path destinationPath2 = Paths.get("src/main/resources/static/images/mock-images/samantha-blue.jpeg");
 //		try {
 //			Files.copy(sourcePath2, destinationPath2, StandardCopyOption.REPLACE_EXISTING);

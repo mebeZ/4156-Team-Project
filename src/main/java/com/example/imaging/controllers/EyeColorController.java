@@ -1,15 +1,16 @@
 package com.example.imaging.controllers;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.imaging.DBUtils;
-import com.example.imaging.IOUtils;
 import com.example.imaging.models.EyeColorInfo;
 //import com.github.sh0nk.matplotlib4j.NumpyUtils;
 //import com.github.sh0nk.matplotlib4j.Plot;
 //import com.github.sh0nk.matplotlib4j.PythonExecutionException;
+import com.example.imaging.services.IOService;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,8 +37,8 @@ public class EyeColorController {
 	// Used to name RGB histogram files sequentially
 	//private static int imgNum = 1;
 
-	public static CascadeClassifier faceCascade = new CascadeClassifier("src/main/resources/templates/haarcascades/haarcascade_frontalface_default.xml");
-	public static CascadeClassifier eyesCascade = new CascadeClassifier("src/main/resources/templates/haarcascades/haarcascade_eye.xml");
+	public static CascadeClassifier faceCascade = new CascadeClassifier("src/main/resources/haarcascades/haarcascade_frontalface_default.xml");
+	public static CascadeClassifier eyesCascade = new CascadeClassifier("src/main/resources/haarcascades/haarcascade_eye.xml");
 
 	/**
 	 * Given an image matrix, detects the eye region.
@@ -390,8 +391,8 @@ public class EyeColorController {
 	@GetMapping("/eye-color")
 	public static EyeColorInfo getEyeColor(@RequestParam(value="name") String name, @RequestParam(value="accessToken") String token) throws Exception {
 		// TODO: Make sure user has permission to access the API
-		DBUtils dbUtils = new DBUtils();
-		dbUtils.checkAccessToken(token);
+		// DBUtils dbUtils = new DBUtils();
+		// dbUtils.checkAccessToken(token);
 		
 		if (name == null) {
 			throw new NullPointerException("name cannot be null");
@@ -399,14 +400,14 @@ public class EyeColorController {
 
 		// Check to see that the name is valid; will throw a FileNotFoundException if not
 		try {
-			IOUtils.getImageName(name);
+			IOService.getImageName(name);
 		} catch (FileNotFoundException e) {
 			throw new IllegalArgumentException("Name is invalid");
 		}
 		
 		
 		System.out.println("Loading image file...");
-		Mat faceImage = IOUtils.loadFileAsMat(name);
+		Mat faceImage = IOService.loadFileAsMat(name);
 		
 		System.out.println("Image file " + name + " successfully loaded");
 		Mat eyeImage = null;

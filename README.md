@@ -9,18 +9,15 @@ The group project for COMS 4156: Advanced Software Engineering
 - `git clone` the project.
 - `Open` the project with IntelliJ IDE. The IDE should be able to detect the Maven configuration
 file (`pom.xml`) and prompt to configure Maven.
-- Alternatively, Go to repository project directory in the terminal, and run the following command:
-- For macOS/Linux:
-`./mvnw spring-boot:run`
+- Our project is build with Spring Boot, run the restService in IDLE, which will start running the server at http://localhost:8080
 
-- Windows:
-`.mvnw.cmd spring-boot:run`
-- Our project is build with Spring Boot, Go to [RestService.java](src/main/java/com/example/imaging/RestService.java), run class RestService, which will start running the server at http://localhost:8080
+- You must first create a client in order to use the API by making a post request to /add-client with a user specified accessToken as a query parameter: i.e. /add-client?accessToken={client_access_token} will add a new client with access_token of 'client_access_token' and an empty image_path to the Client table of the db
+- Then, you can upload a photo to the service by navigating on your browser to: http://localhost:8080/photo?accessToken={client_access_token}, clicking on the 'Capture Photo' button, and then entering a name for your image and uploading it by clicking on the 'Upload Photo' button. This will upload the image to the service's filesystem, update the Client table's image_path field to point to the location of the image ('/images/face-images/{img_name}), and update the Image table with an entry id={image_number} and image_path={image_path}.
 
 ## Unit Testing
 - Unit tests are in `/src/test/java/com/example
 /imaging/`
-- Run test classes under the directory. `mvn test`
+- Run test classes under the directory.
 
 ## API Testing
 - Our API entry points are tested using Postman.
