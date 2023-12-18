@@ -75,6 +75,9 @@ public class UploadController {
     @GetMapping("/upload")
     public String renderUploadPage(Model model, @RequestParam(name="accessToken") String token) {
         model.addAttribute("accessToken", token);
+        // Bind images to the model
+        Iterable<Image> images = imageDao.findAll();
+        model.addAttribute("images", images);
         return "upload";
     }
 
@@ -83,7 +86,7 @@ public class UploadController {
      * @returns: ResponseEntity indicating whether the file upload was successful
      */
     @PostMapping("/upload")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("token") String token) throws Exception {
+    public ResponseEntity<String> handleFileUpload(Model model, @RequestParam("file") MultipartFile file, @RequestParam("token") String token) throws Exception {
         // Find the client with the specified token
         Optional<Client> tclient = clientDao.findById(token);
         if (!tclient.isPresent()) {

@@ -1,10 +1,50 @@
 const video = document.getElementById('camera-stream');
-const canvas = document.getElementById('photo-preview');
+
 const captureButton = document.getElementById('capture-btn');
 const uploadButton = document.getElementById('upload-btn');
-const context = canvas.getContext('2d');
+
 const imageCapture = document.getElementById('image-capture');
+const canvas = document.getElementById('photo-preview');
+const context = canvas.getContext('2d');
+const imageDisplay = document.getElementById('image-preview');
+
 const imageUploadForm = document.getElementById('image-upload-form');
+const fetchImageButton = document.getElementById("fetch-image-button");
+
+let selectedImageName = null;
+
+/*
+Modify the fetch button text to match the clicked dropdown item @element
+*/
+function changeDropdownTitle(element) {
+    var imageName = element.innerText;
+    var button = document.getElementById("dropdownMenuButton");
+    button.innerHTML = imageName;
+    selectedImageName = imageName;
+}
+
+// When the OK button is pressed, fetch the requested image and display it to the client
+fetchImageButton.addEventListener('click', function() {
+    if (selectedImageName == null) {
+        throw new Error("Image not selected"); 
+    }
+    getImageUrl = "http://localhost:8080/getImage?selectedImageName="+selectedImageName;
+    console.log("Url = " + getImageUrl); // Successfully prints this
+    fetch(getImageUrl)
+    .then(response => response.blob())
+    .then(imgBlob => {
+        var blobUrl = URL.createObjectURL(imgBlob);
+        //imageDisplay.src = blobUrl;
+        var img = new Image();
+        img.src = blobUrl;
+        img.onload = function() {
+            context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        }
+    })
+    .catch(error => {
+        console.error("Error fetching the image", error);
+    });
+});
 
 // Fill the camera-stream element with video from the Webcam if there is one
 if (navigator.mediaDevices.getUserMedia) {

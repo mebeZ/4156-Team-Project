@@ -26,9 +26,7 @@ body {
     border-radius: 4px;
     margin-top: 10px;
 }
-#image-capture, #image-upload-form {
-    display: none;
-}
+
 #upload-button {
     display: inline-block;
 }
