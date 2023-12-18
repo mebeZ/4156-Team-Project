@@ -19,6 +19,17 @@ file (`pom.xml`) and prompt to configure Maven.
 /imaging/`
 - Run test classes under the directory.
 
+# Code Coverage
+
+To see code coverage, we used Jacoco \
+use commands: \
+`mvn clean test jacoco:report`\
+Otherwise, clean and test, then generate jacoco report in maven tools
+Then, open **../target/site/jacoco/com.example.bugyourspot.reservation/index.html**
+
+the branch coverage is shown in the documentation
+
+
 ## API Testing
 - Our API entry points are tested using Postman.
 - After running the server at http://localhost:8080, start the test
