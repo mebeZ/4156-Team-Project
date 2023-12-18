@@ -2,6 +2,7 @@ const video = document.getElementById('camera-stream');
 
 const captureButton = document.getElementById('capture-btn');
 const uploadButton = document.getElementById('upload-btn');
+const cancelButton = document.getElementById('cancel-btn')
 
 const imageCapture = document.getElementById('image-capture');
 const canvas = document.getElementById('photo-preview');
@@ -10,6 +11,9 @@ const imageDisplay = document.getElementById('image-preview');
 
 const imageUploadForm = document.getElementById('image-upload-form');
 const fetchImageButton = document.getElementById("fetch-image-button");
+
+const uploadContainer = document.getElementById("upload-container");
+const fetchContainer = document.getElementById("fetch-container");
 
 let selectedImageName = null;
 
@@ -37,9 +41,12 @@ fetchImageButton.addEventListener('click', function() {
         //imageDisplay.src = blobUrl;
         var img = new Image();
         img.src = blobUrl;
+        // Draw the fetched image
         img.onload = function() {
             context.drawImage(img, 0, 0, canvas.width, canvas.height);
         }
+        // Render the drawing of the fetched image visible
+        imageCapture.style.display = 'block';
     })
     .catch(error => {
         console.error("Error fetching the image", error);
@@ -68,9 +75,11 @@ captureButton.addEventListener('click', function() {
     // Converts the content of the canvas to a Blob (Binary Large Object) which represents the image in PNG format
     canvas.toBlob(function(blob) {
         capturedBlob = blob;
-        imageCapture.style.display = 'block'; // Render the captured image div visible 
-        imageUploadForm.style.display = 'block'; // Render the upload form visible
     }, 'image/png');
+    // Show and hide the required div elements
+    imageCapture.style.display = 'block'; // Render the image-capture div visible 
+    uploadContainer.style.display = 'block'; // Render the upload-container div visible
+    fetchContainer.style.display = 'none'; // Render the fetch-container div invisible
 });
 
 // When the user submits the Upload Photo form (by clicking on the 'Upload Photo' button), upload the captured image by making a POST request to /upload controller with the image passed in as form data
@@ -79,8 +88,9 @@ imageUploadForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
     imageCapture.style.display = 'none'; // Render the captured image div invisible 
-    imageUploadForm.style.display = 'none'; // Render the upload form invisible
-    
+    uploadContainer.style.display = 'none'; // Render the upload form invisible
+    fetchContainer.style.display = 'block'; // Render the fetch-container div visible
+
     // Retrieve the filename from the form
     const imageName = document.getElementById("image-name").value + '.png';
     console.log("Image name: ", imageName);
@@ -109,4 +119,11 @@ imageUploadForm.addEventListener('submit', function(event) {
     } else {
         console.log("No image captured to upload");
     }
-})
+});
+
+// For the CancelButton, we must hide the #upload-container and #image-capture divs and show the #fetch-container div
+cancelButton.addEventListener('click', function() {
+    fetchContainer.style.display = 'block';
+    uploadContainer.style.display = 'none';
+    imageCapture.style.display = 'none';
+});

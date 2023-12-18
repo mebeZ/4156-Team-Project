@@ -27,6 +27,10 @@ body {
     margin-top: 10px;
 }
 
+#upload-container, #image-capture {
+    display: none;
+}
+
 #upload-button {
     display: inline-block;
 }
