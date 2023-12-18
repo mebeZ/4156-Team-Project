@@ -180,9 +180,9 @@ class FaceControllerTest {
 
 	@Test
 	void getEyeColorForValid() throws Exception {
-		EyeColorInfo info = EyeColorController.getEyeColor("samantha", "test");
-		assertEquals("samantha", info.name());
-		assertEquals("green", info.eyeColor());
+		String color = EyeColorController.getEyeColor("samantha", "test");
+		//assertEquals("samantha", info.name());
+		assertEquals("green", color);
 	}
 
 	//	 Tests for getAvgIntensity method

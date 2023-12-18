@@ -27,7 +27,7 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 //import org.opencv.core.Size;
-//import org.opencv.highgui.HighGui;
+import org.opencv.highgui.HighGui;
 //import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
@@ -129,20 +129,19 @@ public class EyeColorController {
 	 * @throws: Exception if a unique iris cannot be located in the eye image
 	 */
 	public static double[] detectIris(Mat eyeImage) throws Exception {
-		/*
+		
 		HighGui.imshow("Color eye image", eyeImage);
 		HighGui.waitKey();
-		*/
+		
 		if (eyeImage == null) {
 			throw new NullPointerException("eyeImage cannot be null");
 		}
 
 		Mat grayEyeImage = new Mat();
 		Imgproc.cvtColor(eyeImage, grayEyeImage, Imgproc.COLOR_BGR2GRAY);
-		/*
+		
 		HighGui.imshow("Gray eye image", grayEyeImage);
-		HighGui.waitKey();
-		*/ 
+		HighGui.waitKey(); 
 
 		// Apply a median blur to the image to avoid false positives for circle detection
 		
@@ -152,12 +151,11 @@ public class EyeColorController {
 		HighGui.waitKey();
 		*/
 
-		/*
+		
 		Mat thresholdEyeImage = new Mat();
-		Imgproc.threshold(grayEyeImage, thresholdEyeImage, 30, 255, Imgproc.THRESH_BINARY_INV);
-		*/
+		Imgproc.threshold(grayEyeImage, thresholdEyeImage, 30, 255, Imgproc.THRESH_BINARY);
 
-		// Find circles using Hough transform
+		// Store the detected circles
 		Mat irisCircles = new Mat();
 		// The min and max radius of iris circles to look for based on empirical observation: i.e. the size of the eye bounding rectangle compared to the size of the iris
 		int minIrisRadius = grayEyeImage.rows() / 7;
@@ -166,6 +164,10 @@ public class EyeColorController {
 		double p1 = 100;
 		double p2 = 30;
 
+		// Find the circles using Hough transform
+		Imgproc.HoughCircles(grayEyeImage, irisCircles, Imgproc.HOUGH_GRADIENT, 1.0, minDist, p1, p2, minIrisRadius, maxIrisRadius);
+
+		/*
 		while (irisCircles.cols() != 1) {
 			Imgproc.HoughCircles(grayEyeImage, irisCircles, Imgproc.HOUGH_GRADIENT, 1.0,
 			minDist,
@@ -187,17 +189,21 @@ public class EyeColorController {
 				throw new Exception("detectIris failed: More than 1 circle was detected"); 
 			}
 		}
+		*/
 
-		/*
+		if (irisCircles.cols() == 0) {
+			throw new Exception("No circles detected");
+		}
+
 		for (int i = 0; i < irisCircles.cols(); i++) {
 			double circle[] = irisCircles.get(0, i);
 			System.out.println("Iris: Center x: " + circle[0] + " Center y: " + circle[1] + " Radius: " + circle[2]);
 			Imgproc.circle(thresholdEyeImage, new Point(circle[0], circle[1]), (int) circle[2], new Scalar(255,255,255), 2);
 		}
 
-		HighGui.imshow("Thresholded eye image", thresholdEyeImage);
-		HighGui.waitKey();
-		*/
+		//HighGui.imshow("Thresholded eye image", thresholdEyeImage);
+		//HighGui.waitKey();
+		
 	
 		double iris_circle[] = irisCircles.get(0, 0);
 		double iris_x = iris_circle[0];
@@ -395,7 +401,7 @@ public class EyeColorController {
 	// @RequestParam binds the value of the query parameter name to the value of parameter name in the method
 	// localhost:8080/eye-color?name=carl
 	@GetMapping("/eye-color")
-	public static EyeColorInfo getEyeColor(@RequestParam(value="name") String name, @RequestParam(value="accessToken") String token) throws Exception {
+	public static String getEyeColor(@RequestParam(value="name") String name, @RequestParam(value="accessToken") String token) throws Exception {
 		// TODO: Make sure user has permission to access the API
 		// DBUtils dbUtils = new DBUtils();
 		// dbUtils.checkAccessToken(token);
@@ -431,6 +437,6 @@ public class EyeColorController {
 		// String eyeColor = "green";
 		// detectEye("src/main/resources/static/images/img1.jpeg");
 		// Use Haar Cascades to detect the eye color from an image
-		return new EyeColorInfo(name, eyeColor);
+		return eyeColor;
 	}
 }

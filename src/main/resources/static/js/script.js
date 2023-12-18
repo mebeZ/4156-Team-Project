@@ -35,9 +35,9 @@ fetchImageButton.addEventListener('click', function() {
     }
 
     // Get information about the image to display; call getFoo (to replace with getEyeColor)
-    getFooUrl = "http://localhost:8080/foo?name="+selectedImageName+"&accessToken="+accessToken;
-    console.log("fooUrl = " + getFooUrl);
-    fetch(getFooUrl)
+    getEyeUrl = "http://localhost:8080/eye-color?name="+selectedImageName+"&accessToken="+accessToken;
+    console.log("eyeUrl = " + getEyeUrl);
+    fetch(getEyeUrl)
     .then(response => {
         return response.text();
     })
