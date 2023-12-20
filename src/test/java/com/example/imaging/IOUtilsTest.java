@@ -135,7 +135,7 @@ public class IOUtilsTest {
 	// f. If we pass in a valid name, we should get the correct image name, and the associated image file should exist.
 	@Test
 	void testValidNameReturnsFile() {
-		String imageName = IOUtils.getImageName("samantha");
+		String imageName = IOService.getImageName("samantha");
 		String imagePath = "src/main/resources/static/plain-images/" + imageName;
 		File imageFile = new File(imagePath);
 		Assertions.assertTrue(imageFile.exists());
@@ -166,7 +166,7 @@ public class IOUtilsTest {
 //		}
 //
 //
-//		String imageName = IOUtils.getImageName("samantha");
+//		String imageName = IOService.getImageName("samantha");
 //		Assertions.assertEquals("samantha-green.jpeg", imageName); // Verify that the first valid file is used
 //
 //		mockImageFolder.delete();
