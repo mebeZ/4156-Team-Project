@@ -124,25 +124,28 @@ public class IOUtilsTest {
 
 	// e. If we pass in a valid name, we should get the correct image name.
 	@Test
-	void testFileNameWithValidName() {
-		String name = "samantha";
-		String expectedName = "samantha-green.jpeg";
-		String result = IOService.getImageName(name);
+        void testFileNameWithValidName() {
+             try {
+                    String name = "samantha";
+                    String expectedName = "samantha-green.jpeg";
+                     String result = IOService.getImageName(name);
+                    Assertions.assertEquals(expectedName, result);
+            } catch (FileNotFoundException e) {
+               Assertions.fail("FileNotFoundException should not have been thrown");
+            }
+        }
 
-		// Extract the file name from the full path
-		// resultFileName = Paths.get(result).getFileName().toString();
-
-		Assertions.assertEquals(expectedName, result);
-	}
-
-	// f. If we pass in a valid name, we should get the correct image name, and the associated image file should exist.
-	@Test
-	void testValidNameReturnsFile() {
-		String imageName = IOService.getImageName("samantha");
-		String imagePath = "src/main/resources/static/images/mock-images/" + imageName;
-		File imageFile = new File(imagePath);
-		Assertions.assertTrue(imageFile.exists());
-	}
+       @Test
+        void testValidNameReturnsFile() {
+             try {
+                    String imageName = IOService.getImageName("samantha");
+                    String imagePath = "src/main/resources/static/images/mock-images/" + imageName;
+                    File imageFile = new File(imagePath);
+                    Assertions.assertTrue(imageFile.exists());
+             } catch (FileNotFoundException e) {
+                 Assertions.fail("FileNotFoundException should not have been thrown");
+             }
+        }
 
 
 //	@Test
