@@ -58,17 +58,17 @@ public class IOUtilsTest {
 		assertThrows(FileNotFoundException.class, () -> IOService.getPathToFile(null));
 	}
 
-	@Test
-	void loadValidImageFile() throws FileNotFoundException {
-		Mat result = IOService.loadFileAsMat("samantha");
-		Mat expected = Imgcodecs.imread("src/main/resources/static/plain-images/samantha-green.jpeg");
-		Assertions.assertEquals(expected.rows(), result.rows());
-		Assertions.assertEquals(expected.cols(), result.cols());
-	}
+        @Test
+        void loadValidImageFile() throws FileNotFoundException {
+                 Mat result = IOService.loadFileAsMat("samantha");
+                 Mat expected = Imgcodecs.imread("src/main/resources/static/images/mock-images/samantha-green.jpeg");
+                 Assertions.assertEquals(expected.rows(), result.rows());
+                 Assertions.assertEquals(expected.cols(), result.cols());
+        }
 
 	@Test
 	void loadValidBufferedImageFile() throws IOException {
-		File file = new File("src/main/resources/static/plain-images/samantha-green.jpeg");
+		File file = new File("src/main/resources/static/images/mock-images/samantha-green.jpeg");
 		BufferedImage expectedBufferedImage = ImageIO.read(file);
 		BufferedImage result = IOService.loadFileAsBufferedImage("samantha");
 		Assertions.assertTrue(bufferedImagesEqual(expectedBufferedImage, result));
@@ -136,7 +136,7 @@ public class IOUtilsTest {
 	@Test
 	void testValidNameReturnsFile() {
 		String imageName = IOService.getImageName("samantha");
-		String imagePath = "src/main/resources/static/plain-images/" + imageName;
+		String imagePath = "src/main/resources/static/images/mock-images/" + imageName;
 		File imageFile = new File(imagePath);
 		Assertions.assertTrue(imageFile.exists());
 	}
