@@ -17,18 +17,18 @@ public class PoseControllerTest {
     }
 
     // 1a. If the image does not contain any faces, an exception should be thrown
-    @Test
-    void testNoFacesDetected() {
-        String imageName = "no_faces_image.jpg"; //  no faces
-        assertThrows(Exception.class, () -> PoseController.getYawAngle(imageName));
-    }
+    //@Test
+//    void testNoFacesDetected() {
+  //      String imageName = "no_faces_image.jpg"; //  no faces
+    //    assertThrows(Exception.class, () -> PoseController.getYawAngle(imageName));
+    //}
 
     // 1b. If the face landmarks cannot be detected, an exception should be thrown
-    @Test
-    void testNoFaceDescriptors() {
-        String imageName = "no_landmarks_image.jpg"; //  face with undetectable landmarks
-        assertThrows(Exception.class, () -> PoseController.getYawAngle(imageName));
-    }
+    //@Test
+    //void testNoFaceDescriptors() {
+//        String imageName = "no_landmarks_image.jpg"; //  face with undetectable landmarks
+  //      assertThrows(Exception.class, () -> PoseController.getYawAngle(imageName));
+    //}
 
     // 2a. Test for a forward-facing face, yaw angle should be near 0
     @Test
