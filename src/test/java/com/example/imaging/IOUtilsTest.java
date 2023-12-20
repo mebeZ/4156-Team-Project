@@ -77,11 +77,10 @@ public class IOUtilsTest {
             BufferedImage expectedBufferedImage = ImageIO.read(file);
             BufferedImage result = IOService.loadFileAsBufferedImage("samantha");
             Assertions.assertTrue(bufferedImagesEqual(expectedBufferedImage, result));
-        } catch (IOException | FileNotFoundException e) {
-            Assertions.fail("Exception thrown");
+        } catch (IOException e) {
+            Assertions.fail("IOException thrown");
         }
     }
-
     boolean bufferedImagesEqual(BufferedImage img1, BufferedImage img2) {
         if (img1.getWidth() == img2.getWidth() && img1.getHeight() == img2.getHeight()) {
             for (int x = 0; x < img1.getWidth(); x++) {
