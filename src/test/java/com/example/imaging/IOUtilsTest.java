@@ -38,7 +38,7 @@ public class IOUtilsTest {
 	 * e.
 	 */
 
-	    @BeforeAll
+    @BeforeAll
     public static void loadLocally(){
         OpenCV.loadLocally();
     }
@@ -59,28 +59,21 @@ public class IOUtilsTest {
     }
 
     @Test
-    void loadValidImageFile() {
-        try {
-            Mat result = IOService.loadFileAsMat("samantha");
-            Mat expected = Imgcodecs.imread("src/main/resources/static/images/mock-images/samantha-green.jpeg");
-            Assertions.assertEquals(expected.rows(), result.rows());
-            Assertions.assertEquals(expected.cols(), result.cols());
-        } catch (FileNotFoundException e) {
-            Assertions.fail("FileNotFoundException should not have been thrown");
-        }
+    void loadValidImageFile() throws FileNotFoundException {
+        Mat result = IOService.loadFileAsMat("samantha");
+        Mat expected = Imgcodecs.imread("src/main/resources/static/images/mock-images/samantha-green.jpeg");
+        Assertions.assertEquals(expected.rows(), result.rows());
+        Assertions.assertEquals(expected.cols(), result.cols());
     }
 
     @Test
-    void loadValidBufferedImageFile() {
-        try {
-            File file = new File("src/main/resources/static/images/mock-images/samantha-green.jpeg");
-            BufferedImage expectedBufferedImage = ImageIO.read(file);
-            BufferedImage result = IOService.loadFileAsBufferedImage("samantha");
-            Assertions.assertTrue(bufferedImagesEqual(expectedBufferedImage, result));
-        } catch (IOException e) {
-            Assertions.fail("IOException should not have been thrown");
-        }
+    void loadValidBufferedImageFile() throws IOException, FileNotFoundException {
+        File file = new File("src/main/resources/static/images/mock-images/samantha-green.jpeg");
+        BufferedImage expectedBufferedImage = ImageIO.read(file);
+        BufferedImage result = IOService.loadFileAsBufferedImage("samantha");
+        Assertions.assertTrue(bufferedImagesEqual(expectedBufferedImage, result));
     }
+
 
 
 
