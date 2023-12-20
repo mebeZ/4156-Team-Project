@@ -1,4 +1,4 @@
-package com.example.imaging;
+package com.example.imaging.controllers;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
