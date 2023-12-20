@@ -137,23 +137,21 @@ class FaceControllerTest {
 	}
 	
 	//	 3a. If hist only has one element, and the range is {0, 0}, then the return value should be 0 (i.e. the index of the one element of the hist)
-	@Test
-	void testSingleElementHistAndRangeZeroToZero() {
-		List<Double> hist = Arrays.asList(3.0);
-		int[] range = {0, 0};
-		int avgIntensity = (int) EyeColorController.getAvgIntensity(hist, range);
-		assertEquals(0, avgIntensity);
-	}
-	
-	//	 3b. If hist has more than one element
-	//@Test
-	void testMultipleElementHist() {
-		List<Double> hist = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0);
-		int[] range = {1, 4};
-		// Average intensity calculation: (2*1 + 3*2 + 4*3 + 5*4) / (1 + 2 + 3 + 4)
-		double avgIntensity = EyeColorController.getAvgIntensity(hist, range);
-		assertEquals(3.0, avgIntensity, 0.001); // Using a delta for double comparison
-	}
+    @Test
+    void testSingleElementHistAndRangeZeroToZero() throws Exception {
+        List<Double> hist = Arrays.asList(3.0);
+        int[] range = {0, 0};
+        int avgIntensity = (int) EyeColorController.getAvgIntensity(hist, range);
+        assertEquals(0, avgIntensity);
+    }
+
+    @Test
+    void testMultipleElementHist() throws Exception {
+        List<Double> hist = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0);
+        int[] range = {1, 4};
+        double avgIntensity = EyeColorController.getAvgIntensity(hist, range);
+        assertEquals(3.0, avgIntensity, 0.001); // Using a delta for double comparison
+    }
 	//
 	@Test
 	void testImageWithMultipleIrises() {
