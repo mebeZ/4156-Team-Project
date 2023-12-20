@@ -1,5 +1,7 @@
-package com.example.imaging;
+package com.example.imaging.controllers;
 
+import com.example.imaging.models.PoseInfo;
+import com.example.imaging.services.IOService;
 import nu.pattern.OpenCV;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -36,7 +38,7 @@ public class PoseController {
     public static double getYawAngle(String name) throws Exception {
         Jdlib jdlib = new Jdlib("shape_predictor_68_face_landmarks.dat");
         
-        BufferedImage bufferedImage = IOUtils.loadFileAsBufferedImage(name);
+        BufferedImage bufferedImage = IOService.loadFileAsBufferedImage(name);
         
         // BufferedImage bufferedImage = ImageIO.read(new File("headPose.jpg"));
         ArrayList<Rectangle> faces = jdlib.detectFace(bufferedImage);
@@ -171,7 +173,7 @@ public class PoseController {
         org.opencv.core.Point p2 = noseEndPoint2D.toArray()[0];
         Imgproc.line(image, p1, p2, new Scalar(255, 0, 0), 2);
 
-        String imageName = IOUtils.getImageName(name);
+        String imageName = IOService.getImageName(name);
         String writePath = "src/main/resources/static/labeled-images/" + imageName; 
         Imgcodecs.imwrite(writePath, image);
 
@@ -271,8 +273,9 @@ public class PoseController {
     public ResponseEntity<?> getPoseAngle(@RequestParam(value="name") String name) {
         try {
             double yawAngle = Math.toDegrees(getYawAngle(name));
+            PoseInfo poseInfo = new PoseInfo(name, yawAngle);
 
-            return new ResponseEntity<>(new PoseInfo(name, yawAngle), HttpStatus.OK);
+            return new ResponseEntity<>(poseInfo, HttpStatus.OK);
         } catch (FileNotFoundException e) {
             return new ResponseEntity<>("File not found: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IOException e) {
@@ -284,4 +287,3 @@ public class PoseController {
     }
 
 }
-
