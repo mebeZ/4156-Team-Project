@@ -19,6 +19,14 @@ file (`pom.xml`) and prompt to configure Maven.
 /imaging/`
 - Run test classes under the directory.
 
+## Continuous Integration
+We are using GitHub Actions for CI. 
+- will run `mvn build` and `mvn test` to build the project and run all 
+  tests. 
+Bugfinder
+- CodeQL to run static bug analysis on the project. The job will 
+  run `github/codeql-action/analyze@v2` to checkout bug
+
 # Code Coverage
 
 To see code coverage, we used Jacoco \
