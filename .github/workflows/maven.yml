@@ -20,16 +20,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
     - name: Set up JDK 20
       uses: actions/setup-java@v3
       with:
         java-version: '20'
         distribution: 'temurin'
         cache: maven
-        
+
+    - name: Update packages list
+      run: sudo apt-get update
+
     - name: Install OpenCV
-      run: sudo apt-get install -y libopencv-dev
-      
+      run: sudo apt-get install -y libopencv-dev --fix-missing
+
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
