@@ -59,22 +59,28 @@ public class IOUtilsTest {
     }
 
     @Test
-    void loadValidImageFile() throws FileNotFoundException {
-        Mat result = IOService.loadFileAsMat("samantha");
-        Mat expected = Imgcodecs.imread("src/main/resources/static/images/mock-images/samantha-green.jpeg");
-        Assertions.assertEquals(expected.rows(), result.rows());
-        Assertions.assertEquals(expected.cols(), result.cols());
+    void loadValidImageFile() {
+        try {
+            Mat result = IOService.loadFileAsMat("samantha");
+            Mat expected = Imgcodecs.imread("src/main/resources/static/images/mock-images/samantha-green.jpeg");
+            Assertions.assertEquals(expected.rows(), result.rows());
+            Assertions.assertEquals(expected.cols(), result.cols());
+        } catch (FileNotFoundException e) {
+            Assertions.fail("FileNotFoundException thrown");
+        }
     }
 
     @Test
-    void loadValidBufferedImageFile() throws IOException, FileNotFoundException {
-        File file = new File("src/main/resources/static/images/mock-images/samantha-green.jpeg");
-        BufferedImage expectedBufferedImage = ImageIO.read(file);
-        BufferedImage result = IOService.loadFileAsBufferedImage("samantha");
-        Assertions.assertTrue(bufferedImagesEqual(expectedBufferedImage, result));
+    void loadValidBufferedImageFile() {
+        try {
+            File file = new File("src/main/resources/static/images/mock-images/samantha-green.jpeg");
+            BufferedImage expectedBufferedImage = ImageIO.read(file);
+            BufferedImage result = IOService.loadFileAsBufferedImage("samantha");
+            Assertions.assertTrue(bufferedImagesEqual(expectedBufferedImage, result));
+        } catch (IOException | FileNotFoundException e) {
+            Assertions.fail("Exception thrown");
+        }
     }
-
-
 
     boolean bufferedImagesEqual(BufferedImage img1, BufferedImage img2) {
         if (img1.getWidth() == img2.getWidth() && img1.getHeight() == img2.getHeight()) {
