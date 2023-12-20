@@ -18,6 +18,7 @@ import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.example.imaging.services.IOService;
 import nu.pattern.OpenCV;
 
 import javax.imageio.ImageIO;
@@ -44,22 +45,22 @@ public class IOUtilsTest {
 
 	@Test
 	void loadInvalidImageFile() throws FileNotFoundException {
-		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile("foo.txt")); // foo.txt is an invalid file
+		assertThrows(FileNotFoundException.class, () -> IOService.getPathToFile("foo.txt")); // foo.txt is an invalid file
 	}
 
 	@Test
 	void loadImageFromEmptyString() throws FileNotFoundException {
-		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile(""));
+		assertThrows(FileNotFoundException.class, () -> IOService.getPathToFile(""));
 	}
 
 	@Test
 	void loadImageFromNULL() throws FileNotFoundException {
-		assertThrows(FileNotFoundException.class, () -> IOUtils.getPathToFile(null));
+		assertThrows(FileNotFoundException.class, () -> IOService.getPathToFile(null));
 	}
 
 	@Test
 	void loadValidImageFile() throws FileNotFoundException {
-		Mat result = IOUtils.loadFileAsMat("samantha");
+		Mat result = IOService.loadFileAsMat("samantha");
 		Mat expected = Imgcodecs.imread("src/main/resources/static/plain-images/samantha-green.jpeg");
 		Assertions.assertEquals(expected.rows(), result.rows());
 		Assertions.assertEquals(expected.cols(), result.cols());
@@ -69,7 +70,7 @@ public class IOUtilsTest {
 	void loadValidBufferedImageFile() throws IOException {
 		File file = new File("src/main/resources/static/plain-images/samantha-green.jpeg");
 		BufferedImage expectedBufferedImage = ImageIO.read(file);
-		BufferedImage result = IOUtils.loadFileAsBufferedImage("samantha");
+		BufferedImage result = IOService.loadFileAsBufferedImage("samantha");
 		Assertions.assertTrue(bufferedImagesEqual(expectedBufferedImage, result));
 	}
 
@@ -95,7 +96,7 @@ public class IOUtilsTest {
 	// a. If we pass in a valid file name, we should get the correct image name and check its correctness.
 	//@Test
 	//void testFileNameWithValidNameAndCheckCorrectness() {
-		//String imageName = IOUtils.getImageName("carl");
+		//String imageName = IOService.getImageName("carl");
 		//Assertions.assertTrue(imageName.contains("carl"));
 		//Assertions.assertTrue(imageName.endsWith(".jpeg"));
 	//}
@@ -103,19 +104,19 @@ public class IOUtilsTest {
 	// b. If we pass in a non-existent name, we should get an IllegalArgumentException.
 	//@Test
 	//void testFileNameWithNonExistentName() {
-	//	assertThrows(IllegalArgumentException.class, () -> IOUtils.getImageName("nonexistentname"));
+	//	assertThrows(IllegalArgumentException.class, () -> IOService.getImageName("nonexistentname"));
 	//}
 
 	// c. If we pass in an empty string, we should get an IllegalArgumentException.
 	//@Test
 	//void testFileNameFromEmptyString() {
-		//assertThrows(IllegalArgumentException.class, () -> IOUtils.getImageName(""));
+		//assertThrows(IllegalArgumentException.class, () -> IOService.getImageName(""));
 	//}
 
 	// d. If we pass in a null value, we should get an IllegalArgumentException.
 	//@Test
 	//void testFileNameWithNull() {
-		//assertThrows(IllegalArgumentException.class, () -> IOUtils.getImageName(null));
+		//assertThrows(IllegalArgumentException.class, () -> IOService.getImageName(null));
 	//}
 
 	// e. If we pass in a valid name, we should get the correct image name.
@@ -123,7 +124,7 @@ public class IOUtilsTest {
 	void testFileNameWithValidName() {
 		String name = "samantha";
 		String expectedName = "samantha-green.jpeg";
-		String result = IOUtils.getImageName(name);
+		String result = IOService.getImageName(name);
 
 		// Extract the file name from the full path
 		// resultFileName = Paths.get(result).getFileName().toString();
